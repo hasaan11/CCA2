@@ -30,10 +30,20 @@ void lexer::setCurrentPointer(int pos)
     else
         index = 0;
 }
+
+
 void lexer::Tokenize()//function that tokenizes your input stream
 {
+    string lexeme;
     vector<char>::iterator it = stream.begin();
+    while (it != stream.end())
+    {
+        
+        tokens.push_back(getToken(*it));
+
+    }
 	//your implementation goes here
+    
 	//push_back EOF token at end to identify End of File
     tokens.push_back(token(string(""), TokenType::END_OF_FILE));
 }

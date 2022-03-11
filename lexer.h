@@ -12,12 +12,40 @@ enum class TokenType
 {
 	END_OF_FILE = 0,
 	ERROR,
-	
+	//keywords
+	FUNC,
+	INT,
+	CHAR,
+	CALL,
+	IF,
+	ELIF,
+	ELSE,
+	FOR,
+	PRINT,
+	PRINTLN,
+	RETURN,
+	IN,
+	RO,      // relational operators
+	AO,      // assignment operator
+	//arithmetic operators
+	PLUS,    // +
+	MINUS,   // -
+	DIV,     // /
+	MUL,     // *
+	MOD,     // %
+	ID,      // identifier
+	NL,      // numeric literal
+	CL,      // character literal
+	STR,     // string
+	CMNT,    // comment
+	BG,      // beginning of block '{'
+	END,     // end of block '}'
+    // special characters
+	COM,     //,
+	HASH,    //#
+	COL,     // :
+	SCOL     // ;
 
-
-	
-
-	
 };
 //structure of a token 
 struct token
@@ -36,6 +64,18 @@ class lexer
 	vector<token> tokens; //vector to store all (tokens,lexeme) pairs
 	void Tokenize();//populates tokens vector
 	int index;
+
+
+	token getToken(char it) {
+
+		if (it == '+') {
+			return token("+", TokenType::PLUS);
+		}
+
+	
+
+
+	}
 
 public:
 	lexer();
