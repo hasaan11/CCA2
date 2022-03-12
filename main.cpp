@@ -4,10 +4,11 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	int x = 2;
 	//asking for file name as command line arguments
-	if (argc == 2)
+	if (x == 2)
 	{
-		lexer _lexer(argv[1]);
+		lexer _lexer("test.txt");
 		token t;
 		t = _lexer.getNextToken();
 		while (t.tokenType != TokenType::END_OF_FILE)

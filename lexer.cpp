@@ -39,7 +39,7 @@ void lexer::Tokenize()//function that tokenizes your input stream
     while (it != stream.end())
     {
         
-        tokens.push_back(getToken(*it));
+        tokens.push_back(getToken(*it,it));
 
     }
 	//your implementation goes here
@@ -123,3 +123,9 @@ token lexer::peek(int howFar)
     else
         return tokens[peekIndex];
 }
+
+
+
+
+
+
