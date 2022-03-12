@@ -525,10 +525,162 @@ class lexer
 		token a;
 		return a;
 	}
+		string lexeme = "r";
+		int state = 31;
+		while (1) {
+			switch (state) {
+			case 31:
+				if (*(++itr) == 'e') {
+					lexeme = lexeme + 'e';
+					state = 32;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			
+			case 32:
+				if (*(++itr) == 't') {
+					lexeme = lexeme + 't';
+					state = 33;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			
+			case 33:
+				if (*(++itr) == 'u') {
+					lexeme = lexeme + 'u';
+					state = 34;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 34:
+				if (*(++itr) == 'r') {
+					lexeme = lexeme + 'r';
+					state = 35;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			
+			case 35:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 36;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 36:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::RETURN);
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 62:
+				while (1)
+				{
+					if (isOther(*(++itr))) {
+						return token(lexeme, TokenType::ID);
+					}
+					else
+						lexeme = lexeme + *itr;
+				}
+				break;
+			}
+		}
+	}
 	token checkB(vector<char>::iterator& itr)
 	{
 		token a;
 		return a;
+		string lexeme = "b";
+		int state = 51;
+		while (1) {
+			switch (state) {
+			case 51:
+				if (*(++itr) == 'e') {
+					lexeme = lexeme + 'e';
+					state = 52;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 52:
+				if (*(++itr) == 'g') {
+					lexeme = lexeme + 'g';
+					state = 53;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 53:
+				if (*(++itr) == 'i') {
+					lexeme = lexeme + 'i';
+					state = 54;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 54:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 55;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 55:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::BG);
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 62:
+				while (1)
+				{
+					if (isOther(*(++itr))) {
+						return token(lexeme, TokenType::ID);
+					}
+					else
+						lexeme = lexeme + *itr;
+				}
+				break;
+			}
+		}
 	}
 	token getToken(char it, vector<char>:: iterator & itr) {
 
