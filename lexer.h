@@ -530,9 +530,6 @@ class lexer
 	token getToken(char it, vector<char>:: iterator & itr) {
 
 	
-		if (it == '+') {
-			return token("+", TokenType::PLUS);
-		}
 		// keyowrds and identifiers
 		if (it == 'f') {
 			return checkF(itr);
