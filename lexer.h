@@ -50,6 +50,7 @@ enum class TokenType
 //structure of a token 
 struct token
 {
+public:
 	string lexeme;
 	TokenType tokenType;//enum type
 	//constructor
@@ -94,7 +95,7 @@ class lexer
 				break;
 			case 2:
 				if (*(++itr) == 'n') {
-					lexeme = lexeme + 'u';
+					lexeme = lexeme + 'n';
 					state = 3;
 				}
 				else {
@@ -521,15 +522,23 @@ class lexer
 	}
 	token checkR(vector<char>::iterator& itr)
 	{
-
+		token a;
+		return a;
 	}
 	token checkB(vector<char>::iterator& itr)
 	{
-	
+		token a;
+		return a;
 	}
 	token getToken(char it, vector<char>:: iterator & itr) {
 
-	
+		if (it == ' ') {
+			while (*itr == ' ')
+			{
+				++itr;
+				it = *itr;
+			}
+		}
 		// keyowrds and identifiers
 		if (it == 'f') {
 			return checkF(itr);
