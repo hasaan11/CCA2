@@ -87,46 +87,58 @@ class lexer
 					lexeme = lexeme + 'o';
 						state = 22;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 2:
 				if (*(++itr) == 'n') {
 					lexeme = lexeme + 'u';
 					state = 3;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 3:
 				if (*(++itr) == 'c') {
 					state = 4;
 					lexeme = lexeme + 'c';
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 4:
 				if (isOther(*(++itr))) {
 					return token("func", TokenType::FUNC);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 22:
 				if (*(++itr) == 'r') {
 					lexeme = lexeme + 'r';
 					state = 23;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 23:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::FOR);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 62:
 				while (1)
@@ -134,6 +146,8 @@ class lexer
 					if (isOther(*(++itr))) {
 						return token(lexeme, TokenType::ID);
 					}
+					else
+						lexeme = lexeme + *itr;
 				}
 				break;
 			}
@@ -154,31 +168,39 @@ class lexer
 					lexeme = lexeme + 'f';
 					state = 15;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 6:
 				if (*(++itr) == 't') {
 					lexeme = lexeme + 't';
 					state = 7;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 7:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::INT);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 15:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::IF);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 62:
 				while (1)
@@ -186,6 +208,8 @@ class lexer
 					if (isOther(*(++itr))) {
 						return token(lexeme, TokenType::ID);
 					}
+					else
+						lexeme = lexeme + *itr;
 				}
 				break;
 			}
@@ -206,32 +230,40 @@ class lexer
 					lexeme = lexeme + 'a';
 					state = 12;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 9:
 				if (*(++itr) == 'a') {
 					lexeme = lexeme + 'a';
 					state = 10;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 10:
 				if (*(++itr) == 'r') {
 					lexeme = lexeme + 'r';
 					state = 11;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 11:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::CHAR);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 12:
@@ -239,8 +271,10 @@ class lexer
 					lexeme = lexeme + 'l';
 					state = 13;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 13:
@@ -248,16 +282,20 @@ class lexer
 					lexeme = lexeme + 'l';
 					state = 7;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 14:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::CALL);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 62:
@@ -266,6 +304,8 @@ class lexer
 					if (isOther(*(++itr))) {
 						return token(lexeme, TokenType::ID);
 					}
+					else
+						lexeme = lexeme + *itr;
 				}
 				break;
 			}
@@ -286,8 +326,10 @@ class lexer
 					lexeme = lexeme + 'n';
 					state = 56;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 17:
 				if (*(++itr) == 'i') {
@@ -298,24 +340,30 @@ class lexer
 					lexeme = lexeme + 's';
 					state = 20;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 			case 18:
 				if (*(++itr) == 'f') {
 					lexeme = lexeme + 'f';
 					state = 19;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 19:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::ELIF);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 20:
@@ -323,16 +371,20 @@ class lexer
 					lexeme = lexeme + 'e';
 					state = 13;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 21:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::ELSE);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 56:
@@ -340,16 +392,20 @@ class lexer
 					lexeme = lexeme + 'd';
 					state = 57;
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 57:
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::END);
 				}
-				else
+				else {
+					lexeme = lexeme + *itr;
 					state = 62;
+				}
 				break;
 
 			case 62:
@@ -358,6 +414,10 @@ class lexer
 					if (isOther(*(++itr))) {
 						return token(lexeme, TokenType::ID);
 					}
+					else
+					{
+						lexeme = lexeme + *itr;
+					}
 				}
 				break;
 			}
@@ -365,7 +425,99 @@ class lexer
 	}
 	token checkP(vector<char>::iterator& itr)
 	{
+		string lexeme = "p";
+		int state = 24;
+		while (1) {
+			switch (state) {
+			case 24:
+				if (*(++itr) == 'r') {
+					lexeme = lexeme + 'r';
+					state = 25;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 25:
+				if (*(++itr) == 'i') {
+					lexeme = lexeme + 'i';
+					state = 26;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 26:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 27;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
 
+			case 27:
+				if (*(++itr) == 't') {
+					lexeme = lexeme + 't';
+					state = 27;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 28:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::PRINT);
+				}
+				else if (*(++itr) == 'l') {
+					lexeme = lexeme + 'l';
+					state = 29;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 29:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 30;
+				}
+
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 30:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::PRINTLN);
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 62:
+				while (1)
+				{
+					if (isOther(*(++itr))) {
+						return token(lexeme, TokenType::ID);
+					}
+					else
+						lexeme = lexeme + *itr;
+				}
+				break;
+			}
+		}
 	}
 	token checkR(vector<char>::iterator& itr)
 	{
