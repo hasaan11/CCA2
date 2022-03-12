@@ -561,6 +561,42 @@ class lexer
 		{
 			return checkB(itr);
 		}
+		//ao
+		if (it == '+') {
+			return token("+", TokenType::PLUS);
+		}
+		if (it == '-') {
+			return token("-", TokenType::MINUS);
+		}
+		if (it == '/') {
+			return token("/", TokenType::DIV);
+		}
+		if (it == '*') {
+			return token("*", TokenType::MUL);
+		}
+		//ro
+		if (it == '<') {
+			return token("<", TokenType::RO);
+		}
+		if (it == '>') {
+			return token(">", TokenType::RO);
+		}
+		if (it == '=') {
+			return token("=", TokenType::RO);
+		}
+		//special characters
+		if (it == ',') {
+			return token(",", TokenType::COM);
+		}
+		if (it == '#') {
+			return token("#", TokenType::HASH);
+		}
+		if (it == ';') {
+			return token(";", TokenType::SCOL);
+		}
+		if (it == ':') {
+			return token(":", TokenType::COL);
+		}
 	}
 
 public:
