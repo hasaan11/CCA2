@@ -4,11 +4,11 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	int x = 2;
+	int x = 0;
 	//asking for file name as command line arguments
-	if (x == 2)
+	if (argc == 2)
 	{
-		lexer _lexer("test.txt");
+		lexer _lexer(argv[1);
 		token t;
 		t = _lexer.getNextToken();
 		while (t.tokenType != TokenType::END_OF_FILE)
@@ -25,5 +25,6 @@ int main(int argc, char* argv[])
 	{
 		cout << "Please provide a file name" << endl;
 	}
+	system("Pause");
 	return 0;
 }

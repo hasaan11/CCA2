@@ -2,7 +2,45 @@
 using namespace std;
 //for printing tokens names, Same as the enum defined in lexer.h
 string reserved[] = {
-    "END_OF_FILE"
+    "END_OF_FILE",
+        "ERROR",
+    "FUNC",
+    "INT",
+    "CHAR",
+    "CALL",
+    "IF",
+    "ELIF",
+    "ELSE",
+    "FOR",
+    "PRINT",
+    "PRINTLN",
+    "RETURN",
+    "IN",
+    "EQUALTO",      // relational operators
+    "LEQ",
+    "LESSTHAN",
+    "GEQ",
+    "GRTHAN",
+    "APPROX",
+    "AO",      // assignment operator
+          //arithmetic operators
+    "PLUS",    // +
+    "MINUS",   // -
+    "DIV",     // /
+    "MUL",     // *
+    "MOD",     // %
+    "ID",      // identifier
+    "NL",      // numeric literal
+    "CL",      // character literal
+    "STR",     // string
+    "CMNT",    // comment
+    "BG",      // beginning of block '{'
+    "END",     // end of block '}'
+    // special characters
+    "COM",     //,
+    "HASH",    //#
+    "COL",     // :
+    "SCOL"     // ;
 	};
 token::token()
 {
@@ -36,16 +74,18 @@ void lexer::Tokenize()//function that tokenizes your input stream
 {
     string lexeme;
     vector<char>::iterator it = stream.begin();
-    while (it != stream.end())
+    while (*it != EOF)
     {
         
         tokens.push_back(getToken(*it,it));
+        tokens[tokens.size() - 1].Print();
+      
 
     }
 	//your implementation goes here
     
 	//push_back EOF token at end to identify End of File
-    tokens.push_back(token(string(""), TokenType::END_OF_FILE));
+    //tokens.push_back(token(string(""), TokenType::END_OF_FILE));
 }
 lexer::lexer(const char filename[])
 {
@@ -64,8 +104,9 @@ lexer::lexer(const char filename[])
             if (byte != '\r')
                 stream.push_back(byte);
         }
-        stream.push_back(' ');//dummy spaces appended at the end
-        stream.push_back(' ');
+        
+        stream.push_back(EOF);//dummy spaces appended at the end
+        //stream.push_back(' ');
         //Tokenize function to get all the (token,lexeme) pairs
         Tokenize();
         //assigning tokens to iterator::pointer

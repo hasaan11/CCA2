@@ -11,8 +11,7 @@ using namespace std;
 enum class TokenType
 {
 	END_OF_FILE = 0,
-	ERROR,
-	//keywords
+	ERROR,//keywords
 	FUNC,
 	INT,
 	CHAR,
@@ -25,9 +24,13 @@ enum class TokenType
 	PRINTLN,
 	RETURN,
 	IN,
-	RO,      // relational operators
-	AO,      // assignment operator
-	//arithmetic operators
+	EQUALTO,      // relational operators
+	LEQ,
+	LESSTHAN,
+	GEQ,
+	GRTHAN,
+	APPROX,
+	AO,      // assignment operator			//arithmetic operators
 	PLUS,    // +
 	MINUS,   // -
 	DIV,     // /
@@ -39,8 +42,7 @@ enum class TokenType
 	STR,     // string
 	CMNT,    // comment
 	BG,      // beginning of block '{'
-	END,     // end of block '}'
-    // special characters
+	END,     // end of block '}'             // special characters
 	COM,     //,
 	HASH,    //#
 	COL,     // :
@@ -65,13 +67,63 @@ class lexer
 	void Tokenize();//populates tokens vector
 	int index;
 
+	
 	bool isOther(char c) {
-		if (c < 'A' || c > 'z') {
+		if (c < 'A'  || c > 'z'){
 			return true;
 		}
 		else return false;
 	}
+	bool notKeyWord(char c)
+	{
+		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		{
+			if (c != 'f' && c != 'i' && c != 'c' && c != 'e' && c != 'p' && c != 'r' && c != 'b')
+			{
+				return true;
+			}
+		}
 
+		return false;
+	}
+	bool isDigit(char c)
+	{
+		if (c >= '0' && c <= '9')
+		{
+			return true;
+		}
+		return false;
+	}
+	bool isChar(char c)
+	{
+		if ((c >= 'a' && c <= 'z') || ((c >= 'A' && c <= 'Z')))
+		{
+			return true;
+		}
+		return false;
+	}
+	token checkIdentifier(vector<char>::iterator& itr)
+	{
+		string lexeme = "";
+		lexeme = lexeme + *itr;
+
+		int state = 62;
+		switch (state) 
+		{
+		case 62:
+			while (1)
+			{
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::ID);
+				}
+				else
+					lexeme = lexeme + *itr;
+			}
+			break;
+
+		}
+
+	}
 	token checkF(vector<char>::iterator& itr)
 	{
 		string lexeme = "f";
@@ -94,7 +146,7 @@ class lexer
 				break;
 			case 2:
 				if (*(++itr) == 'n') {
-					lexeme = lexeme + 'u';
+					lexeme = lexeme + 'n';
 					state = 3;
 				}
 				else {
@@ -162,7 +214,7 @@ class lexer
 			case 5:
 				if (*(++itr) == 'n') {
 					lexeme = lexeme + 'n';
-					state = 2;
+					state = 6;
 				}
 				else if (*(itr) == 'f') {
 					lexeme = lexeme + 'f';
@@ -314,7 +366,7 @@ class lexer
 	token checkE(vector<char>::iterator& itr)
 	{
 		string lexeme = "e";
-		int state = 8;
+		int state = 16;
 		while (1) {
 			switch (state) {
 			case 16:
@@ -521,78 +573,373 @@ class lexer
 	}
 	token checkR(vector<char>::iterator& itr)
 	{
+		string lexeme = "r";
+		int state = 31;
+		while (1) {
+			switch (state) {
+			case 31:
+				if (*(++itr) =='e'){
+					lexeme = lexeme + 'e';
+					state = 32;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 32:
+				if (*(++itr) == 't') {
+					lexeme = lexeme + 't';
+					state = 33;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 33:
+				if (*(++itr) == 'u') {
+					lexeme = lexeme + 'u';
+					state = 34;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
 
+			case 34:
+				if (*(++itr) == 'r') {
+					lexeme = lexeme + 'r';
+					state = 35;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 35:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 36;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 36:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::RETURN);
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 62:
+				while (1)
+				{
+					if (isOther(*(++itr))) {
+						return token(lexeme, TokenType::ID);
+					}
+					else
+						lexeme = lexeme + *itr;
+				}
+				break;
+			}
+		}
 	}
 	token checkB(vector<char>::iterator& itr)
 	{
-	
+		string lexeme = "b";
+		int state = 51;
+		while (1) {
+			switch (state) {
+			case 51:
+				if (*(++itr) == 'e') {
+					lexeme = lexeme + 'e';
+					state = 52;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 52:
+				if (*(++itr) == 'g') {
+					lexeme = lexeme + 'g';
+					state = 53;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 53:
+				if (*(++itr) == 'i') {
+					lexeme = lexeme + 'i';
+					state = 54;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 54:
+				if (*(++itr) == 'n') {
+					lexeme = lexeme + 'n';
+					state = 55;
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+			case 55:
+				if (isOther(*(++itr))) {
+					return token(lexeme, TokenType::BG);
+				}
+				else {
+					lexeme = lexeme + *itr;
+					state = 62;
+				}
+				break;
+
+			case 62:
+				while (1)
+				{
+					if (isOther(*(++itr))) {
+						return token(lexeme, TokenType::ID);
+					}
+					else
+						lexeme = lexeme + *itr;
+				}
+				break;
+			}
+		}
+	}
+	token checkCharLiteral(vector<char>::iterator& itr)
+	{
+		itr++;
+		string lexeme = "\'";
+		if (isChar(*itr)) {
+			lexeme = lexeme + *itr;
+			itr++;
+			
+			if (*itr == '\'')
+			{
+				lexeme = lexeme + *itr;
+				return token(lexeme, TokenType::CL);
+			}
+			else
+				return token(lexeme, TokenType::ERROR);
+		}
+	}
+	token checkLessThan(vector<char>::iterator& itr)
+	{
+		itr++;
+		if (*itr == '-')
+		{
+			itr++;
+			return token("<-", TokenType::AO);
+		}
+
+		else if (*itr == '=')
+		{
+			itr++;
+			return token("<=", TokenType::LEQ);
+
+		}
+		else
+			return token("<", TokenType::LESSTHAN);
+	}
+	token checkGreaterThan(vector<char>::iterator& itr) {
+		itr++;
+
+		if (*itr == '=')
+		{
+			itr++;
+			return token(">=", TokenType::GEQ);
+
+		}
+		else
+			return token("<", TokenType::GRTHAN);
+	}
+	token checkString(vector<char>::iterator& itr)
+	{
+		string lexeme = "";
+		lexeme = lexeme + *itr;
+		itr++;
+		lexeme = lexeme + *itr;
+		while (*itr != '\"')
+		{
+			itr++;
+			lexeme = lexeme + *itr;
+		}
+		
+		lexeme = lexeme + *itr;
+		itr++;
+		return token(lexeme, TokenType::STR);
+
+	}
+	token checkDigit(vector<char>::iterator& itr) {
+		string lexeme = "";
+		lexeme = lexeme + *itr;
+		while (1)
+		{
+			itr++;
+			if (isDigit(*itr)) {
+				lexeme = lexeme + *itr;
+				continue;
+			}
+			else {
+				return token(lexeme, TokenType::NL);
+			}
+		}
 	}
 	token getToken(char it, vector<char>:: iterator & itr) {
+		
+		token a;
+		int s = tokens.size();
+		if (s != 0) {
+			 a = tokens[s - 1];
+		}
+		if (a.tokenType == TokenType::HASH) {
+			string lexeme = "";
+			lexeme = lexeme + *itr;
+			while (*(++itr) != '\n') {
+				lexeme = lexeme + *itr;
+			}
+			return token(lexeme, TokenType::CMNT);
+		}
+		else 
+		{
+			if (it == ' ' || it == '\n' || it == '\t')
+			{
+				while (it == ' ' || it == '\n' || it == '\t') {
+					++itr;
+					it = *itr;
+				}
+			}
 
-	
-		// keyowrds and identifiers
-		if (it == 'f') {
-			return checkF(itr);
-		}
-		if (it == 'i')
-		{
-			return checkI(itr);
-		}
-		if (it == 'c')
-		{
-			return checkC(itr);
-		}
-		if (it == 'e')
-		{
-			return checkE(itr);
-		}
-		if (it == 'p')
-		{
-			return checkP(itr);
-		}
-		if (it == 'r')
-		{
-			return checkR(itr);
-		}
-		if (it == 'b')
-		{
-			return checkB(itr);
-		}
-		//ao
-		if (it == '+') {
-			return token("+", TokenType::PLUS);
-		}
-		if (it == '-') {
-			return token("-", TokenType::MINUS);
-		}
-		if (it == '/') {
-			return token("/", TokenType::DIV);
-		}
-		if (it == '*') {
-			return token("*", TokenType::MUL);
-		}
-		//ro
-		if (it == '<') {
-			return token("<", TokenType::RO);
-		}
-		if (it == '>') {
-			return token(">", TokenType::RO);
-		}
-		if (it == '=') {
-			return token("=", TokenType::RO);
-		}
-		//special characters
-		if (it == ',') {
-			return token(",", TokenType::COM);
-		}
-		if (it == '#') {
-			return token("#", TokenType::HASH);
-		}
-		if (it == ';') {
-			return token(";", TokenType::SCOL);
-		}
-		if (it == ':') {
-			return token(":", TokenType::COL);
+			// keywords and identifiers
+			if (it == 'f') {
+				return checkF(itr);
+			}
+			if (it == 'i')
+			{
+				return checkI(itr);
+			}
+			if (it == 'c')
+			{
+				return checkC(itr);
+			}
+			if (it == 'e')
+			{
+				return checkE(itr);
+			}
+			if (it == 'p')
+			{
+				return checkP(itr);
+			}
+			if (it == 'r')
+			{
+				return checkR(itr);
+			}
+			if (it == 'b')
+			{
+				return checkB(itr);
+			}
+			//ao
+			if (it == '+') {
+				itr++;
+				return token("+", TokenType::PLUS);
+			}
+			if (it == '-') {
+				itr++;
+				return token("-", TokenType::MINUS);
+			}
+			if (it == '/') {
+				itr++;
+				return token("/", TokenType::DIV);
+			}
+			if (it == '*') {
+				itr++;
+				return token("*", TokenType::MUL);
+			}
+			if (it == '%') {
+				return token("%", TokenType::MOD);
+			}
+			//ro
+			if (it == '<') {
+				return checkLessThan(itr);
+			}
+			if (it == '>') {
+				return checkGreaterThan(itr);
+			}
+			if (it == '=') {
+				return token("=", TokenType::EQUALTO);
+			}
+			//special characters
+			if (it == ',') {
+				itr++;
+				return token(",", TokenType::COM);
+			}
+			if (it == '#') {
+				itr++;
+				return token("#", TokenType::HASH);
+			}
+			if (it == ';') {
+				itr++;
+				return token(";", TokenType::SCOL);
+			}
+			if (it == ':') {
+				itr++;
+				return token(":", TokenType::COL);
+			}
+			// Identifier
+			if (notKeyWord(it))
+			{
+				return checkIdentifier(itr);
+			}
+
+			// numeric literal
+			if (isDigit(it)) {
+				return checkDigit(itr);
+			}
+
+			// character Literal
+			if (it == '\'') {
+				return checkCharLiteral(itr);
+			}
+			// string
+			if (it == '\"') {
+				return checkString(itr);
+			}
+
+			if (it == EOF)
+			{
+				return token("", TokenType::END_OF_FILE);
+			}
+
+			if(it == '~')
+			{
+				itr++;
+				if (*itr == '=')
+				{
+					return token("~=", TokenType::APPROX);
+				}
+				else
+				{
+					itr++;
+					string lexeme = "";
+					lexeme = lexeme + *itr;
+					return token(lexeme, TokenType:: ERROR );
+				}
+			}
 		}
 	}
 
