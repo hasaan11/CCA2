@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 		{
 			t.Print();
 			t = _lexer.getNextToken();
+			system("PAUSE");
 		}
 	}
 	else if (argc > 2)

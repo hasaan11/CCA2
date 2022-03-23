@@ -52,6 +52,7 @@ enum class TokenType
 //structure of a token 
 struct token
 {
+public:
 	string lexeme;
 	TokenType tokenType;//enum type
 	//constructor
