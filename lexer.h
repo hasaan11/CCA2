@@ -29,7 +29,7 @@ enum class TokenType
 	LESSTHAN,
 	GEQ,
 	GRTHAN,
-	APPROX,
+	NOTEQUALTO,
 	AO,      // assignment operator			//arithmetic operators
 	PLUS,    // +
 	MINUS,   // -

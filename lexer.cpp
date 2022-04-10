@@ -21,7 +21,7 @@ string reserved[] = {
     "LESSTHAN",
     "GEQ",
     "GRTHAN",
-    "APPROX",
+    "NOTEQUALTO",
     "AO",      // assignment operator
           //arithmetic operators
     "PLUS",    // +
