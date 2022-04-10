@@ -143,30 +143,74 @@ bool parser::codeBlock()
 {
     //ensures there is at least one occurence of a statement
     //codeBlock->declare | input | print | loop | if_ | functionCall | return
-    declare();
-    input();
-    print();
-    loop();
-    if_();
-    functionCall();
-    return_();
-    //return true;
-//return false;
+    if (declare() == true)
+    {
+        return true;
+    }
+    else if (input() == true)
+    {
+        return true;
+    }
+    else if (print() == true)
+    {
+        return true;
+    }
+    else if (loop() == true)
+    {
+        return true;
+    }
+    else if (if_() == true)
+    {
+        return true;
+    }
+    else if (functionCall() == true)
+    {
+        return true;
+    }
+    else if (return_() == true)
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::statements()
 {
     //general parts of the sample codes
     //statements->declare | input | print | loop | if | functionCall | return_ | null
-    declare();
-    input();
-    print();
-    loop();
-    if_();
-    functionCall();
-    return_();
-    //else null return true;
- //return false;
+    if (declare() == true)
+    {
+        return true;
+    }
+    else if (input() == true)
+    {
+        return true;
+    }
+    else if (print() == true)
+    {
+        return true;
+    }
+    else if (loop() == true)
+    {
+        return true;
+    }
+    else if (if_() == true)
+    {
+        return true;
+    }
+    else if (functionCall() == true)
+    {
+        return true;
+    }
+    else if (return_() == true)
+    {
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::declare()
@@ -239,9 +283,11 @@ bool parser::expression()
 {
     //handles the precedence of operators
     //expression->t expression2
-    t();
-    expression2();
-    //return???
+    if (t() == false)
+    {
+        return false;
+    }
+    return expression2();
 }
 
 bool parser::expression2()
@@ -271,9 +317,11 @@ bool parser::expression2()
 bool parser::t()
 {
     //t -> f t2
-    f();
-    t2();
-    //return??
+    if (f() == false)
+    {
+        return false;
+    }
+    return t2();
 }
 
 bool parser::t2()
@@ -335,6 +383,7 @@ bool parser::f()
 
 bool parser::value()
 {
+    //value -> NL | CL | ID
     if (_lexer.peek(1).tokenType == TokenType::NL)
     {
         expect(TokenType::NL);
@@ -355,45 +404,282 @@ bool parser::value()
 
 bool parser::input()
 {
-
+    //input statement
+    //input->IN ID SCOL statements
+    if (_lexer.peek(1).tokenType == TokenType::IN)
+    {
+        expect(tokenType::IN);
+        if (_lexer.peek(1).tokenType == TokenType::ID)
+        {
+            expect(TokenType::ID);
+            if (_lexer.peek(1).tokenType == TokenType::SCOL)
+            {
+                expect(TokenType::SCOL);
+                statements();
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool parser::print()
 {
+    //print statement
+    //print->PRINT value3 
+    if (_lexer.peek(1).tokenType == TokenType::PRINT)
+    {
+        expect(TokenType::PRINT);
+        value3();
+        return true;
+    }
+    return false;
+}
 
+bool parser::value3()
+{
+    //value3 -> ID SCOL statements | STR SCOL statements | expression SCOL statements
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            statements();
+            return true;
+        }
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::STR)
+    {
+        expect(TokenType::STR);
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            statements();
+            return true;
+        }
+    }
+    else
+    {
+        expression();
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            statements();
+            return true;
+        }
+    }
+    return false;
 }
 
 bool parser::loop()
 {
-
+    //for loop
+    //loop->FOR ID AO NL COMMA expression ro expression COMMA ID AO rightAssign COLON
+    //    BEGIN statements END statements
+    if (_lexer.peek(1).tokenType == TokenType::FOR)
+    {
+        expect(TokenType::FOR);
+        if (_lexer.peek(1).tokenType == TokenType::ID)
+        {
+            expect(TokenType::ID);
+            if (_lexer.peek(1).tokenType == TokenType::AO)
+            {
+                expect(TokenType::AO);
+                if (_lexer.peek(1).tokenType == TokenType::NL)
+                {
+                    expect(TokenType::NL);
+                    if (_lexer.peek(1).tokenType == TokenType::COM)
+                    {
+                        expect(TokenType::COM);
+                        expression();
+                        relationalOperators();
+                        expression();
+                        if (_lexer.peek(1).tokenType == TokenType::COM)
+                        {
+                            expect(TokenType::COM);
+                            if (_lexer.peek(1).tokenType == TokenType::ID)
+                            {
+                                expect(TokenType::ID);
+                                if (_lexer.peek(1).tokenType == TokenType::AO)
+                                {
+                                    expect(TokenType::AO);
+                                    rightAssign();
+                                    if (_lexer.peek(1).tokenType == TokenType::COL)
+                                    {
+                                        expect(TokenType::COL);
+                                        if (_lexer.peek(1).tokenType == TokenType::BG)
+                                        {
+                                            expect(TokenType::BG);
+                                            statements();
+                                            if (_lexer.peek(1).tokenType == TokenType::END)
+                                            {
+                                                expect(TokenType::END);
+                                                statements();
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 
 bool parser::rightAssign()
 {
-
+    //rightAssign->expression | NL
+    if (_lexer.peek(1).tokenType == TokenType::NL)
+    {
+        expect(TokenType::NL);
+        return true;
+    }
+    else
+    {
+        if (expression() == true)
+        {
+            return true;
+        }
+    }
+    rerutn false;
 }
 
 bool parser::if_()
 {
-
+    //if statement
+    //if_->IF expression ro expression COL BEGIN statements END else_ statements
+    if (_lexer.peek(1).tokenType == TokenType::IF)
+    {
+        expect(TokenType::IF);
+        expression();
+        relationalOperators();
+        expression();
+        if (_lexer.peek(1).tokenType == TokenType::COL)
+        {
+            expect(TokenType::COL);
+            if (_lexer.peek(1).tokenType == TokenType::BG)
+            {
+                expect(TokenType::BG);
+                statements();
+                if (_lexer.peek(1).tokenType == TokenType::END)
+                {
+                    expect(TokenType::END);
+                    else_();
+                    statements();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 bool parser::else_()
 {
-
+    //else_ -> ELSE BEGIN statements END | null
+    if (_lexer.peek(1).tokenType == TokenType::ELSE)
+    {
+        expect(TokenType::ELSE);
+        if (_lexer.peek(1).tokenType == TokenType::BG)
+        {
+            expect(TokenType::BG);
+            statements();
+            if (_lexer.peek(1).tokenType == TokenType::END)
+            {
+                expect(TokenType::END);
+                return true;
+            }
+        }
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::relationalOperators()
 {
-
+    //relational operators
+    //ro->EQUALTO | LEQ | LESSTHAN | GEQ | GRTHAN | NOTEQUALS
+    if (_lexer.peek(1).tokenType == TokenType::EQUALTO)
+    {
+        expect(TokenType::EQUALTO);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::LEQ)
+    {
+        expect(TokenType::LEQ);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::LESSTHAN)
+    {
+        expect(TokenType::LESSTHAN);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::GEQ)
+    {
+        expect(TokenType::GEQ);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::GRTHAN)
+    {
+        expect(TokenType::GRTHAN);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::NOTEQUALTO)
+    {
+        expect(TokenType::NOTEQUALTO);
+        return true;
+    }
+    return false;
 }
 
 bool parser::funtionCall()
 {
-
+    //function call, general implementation that can send multiple parameters (optional in this assignment)
+    //functionCall -> CALL ID id2 SCOL statements
+    //id2 -> ID id3 | null
+    //id3 -> COMMA id3 | null
 }
 
 bool parser::return_()
 {
+    //return_ -> RETURN value4
+    if (_lexer.peek(1).tokenType == TokenType::RETURN)
+    {
+        expect(TokenType::RETURN);
+        value4();
+        return true;
+    }
+    return false;
+}
 
+bool parser::value4()
+{
+    //value4 -> ID SCOL | value SCOL
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            return true;
+        }
+    }
+    else 
+    {
+        value();
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            return true;
+        }
+    }
+    return false;
 }

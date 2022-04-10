@@ -16,5 +16,32 @@ public:
         expect(TokenType::ASSIGN);   //example function call
       */
 	//all your parser function goes here
+    bool start();
+    bool datatype();
+    bool parameters();
+    bool parameters2();
+    bool codeBlock();
+    bool statements();
+    bool declare();
+    bool declare2();
+    bool initializer();
+    bool value2();
+    bool expression();
+    bool expression2();
+    bool t();
+    bool t2();
+    bool f();
+    bool value();
+    bool input();
+    bool print();
+    bool value3();
+    bool loop();
+    bool rightAssign();
+    bool if_();
+    bool else_();
+    bool relationalOperators();
+    bool funtionCall();
+    bool return_();
+    bool value4();
 };
 #endif
