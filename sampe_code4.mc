@@ -22,6 +22,6 @@ begin
 		end
 	end
 	print "hcf: ";#print
-	prinln hcf;
+	println hcf;
 	return 0;#halts the program
 end

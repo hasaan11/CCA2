@@ -69,12 +69,6 @@ class lexer
 	int index;
 
 	
-	bool isOther(char c) {
-		if (c < 'A'  || c > 'z'){
-			return true;
-		}
-		else return false;
-	}
 	bool notKeyWord(char c)
 	{
 		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
@@ -103,10 +97,25 @@ class lexer
 		}
 		return false;
 	}
+
+
+	bool isOther(char c) {
+		//if (c < 'A' || c > 'z') {
+		//	return true;
+		//}
+		//else return false;
+
+		if (isDigit(c) || isChar(c))
+		{
+			return false;
+		}
+
+		return true;
+	}
 	token checkIdentifier(vector<char>::iterator& itr)
 	{
 		string lexeme = "";
-		lexeme = lexeme + *itr;
+		//lexeme = lexeme + *itr;
 
 		int state = 62;
 		switch (state) 
@@ -114,11 +123,14 @@ class lexer
 		case 62:
 			while (1)
 			{
-				if (isOther(*(++itr))) {
+				if (isOther(*(itr))) {
+					//itr++;
 					return token(lexeme, TokenType::ID);
 				}
 				else
 					lexeme = lexeme + *itr;
+					itr++;
+				
 			}
 			break;
 
@@ -196,11 +208,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
 						lexeme = lexeme + *itr;
+						itr++;
+					
 				}
 				break;
 			}
@@ -222,7 +237,7 @@ class lexer
 					state = 15;
 				}
 				else {
-					lexeme = lexeme + *itr;
+					//lexeme = lexeme + *itr;
 					state = 62;
 				}
 				break;
@@ -258,11 +273,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						//itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
 						lexeme = lexeme + *itr;
+						itr++;
+						
 				}
 				break;
 			}
@@ -354,11 +372,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
 						lexeme = lexeme + *itr;
+						itr++;
+					
 				}
 				break;
 			}
@@ -464,13 +485,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
-					{
 						lexeme = lexeme + *itr;
-					}
+						itr++;
+					
 				}
 				break;
 			}
@@ -516,7 +538,7 @@ class lexer
 			case 27:
 				if (*(++itr) == 't') {
 					lexeme = lexeme + 't';
-					state = 27;
+					state = 28;
 				}
 				else {
 					lexeme = lexeme + *itr;
@@ -527,7 +549,7 @@ class lexer
 				if (isOther(*(++itr))) {
 					return token(lexeme, TokenType::PRINT);
 				}
-				else if (*(++itr) == 'l') {
+				else if (*(itr) == 'l') {
 					lexeme = lexeme + 'l';
 					state = 29;
 				}
@@ -562,11 +584,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
-						lexeme = lexeme + *itr;
+						
+					lexeme = lexeme + *itr;
+					itr++;
 				}
 				break;
 			}
@@ -642,11 +667,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
 						lexeme = lexeme + *itr;
+						itr++;
+					
 				}
 				break;
 			}
@@ -712,11 +740,14 @@ class lexer
 			case 62:
 				while (1)
 				{
-					if (isOther(*(++itr))) {
+					if (isOther(*(itr))) {
+						itr++;
 						return token(lexeme, TokenType::ID);
 					}
 					else
-						lexeme = lexeme + *itr;
+					lexeme = lexeme + *itr;
+						itr++;
+					
 				}
 				break;
 			}
@@ -767,7 +798,7 @@ class lexer
 
 		}
 		else
-			return token("<", TokenType::GRTHAN);
+			return token(">", TokenType::GRTHAN);
 	}
 	token checkString(vector<char>::iterator& itr)
 	{
@@ -803,20 +834,21 @@ class lexer
 	}
 	token getToken(char it, vector<char>:: iterator & itr) {
 		
-		token a;
-		int s = tokens.size();
-		if (s != 0) {
-			 a = tokens[s - 1];
-		}
-		if (a.tokenType == TokenType::HASH) {
-			string lexeme = "";
-			lexeme = lexeme + *itr;
-			while (*(++itr) != '\n') {
-				lexeme = lexeme + *itr;
-			}
-			return token(lexeme, TokenType::CMNT);
-		}
-		else 
+		//token a;
+		//int s = tokens.size();
+		//if (s != 0) {
+		//	 a = tokens[s - 1];
+		//}
+		////if (a.tokenType == TokenType::HASH) {
+		////	string lexeme = "";
+		////	lexeme = lexeme + *itr;
+		////	while (*(++itr) != '\n') {
+		////		lexeme = lexeme + *itr;
+		////	}
+		////	return token(lexeme, TokenType::CMNT);
+		////}
+		//else 
+		while(1)
 		{
 			if (it == ' ' || it == '\n' || it == '\t')
 			{
@@ -872,6 +904,7 @@ class lexer
 				return token("*", TokenType::MUL);
 			}
 			if (it == '%') {
+				itr++;
 				return token("%", TokenType::MOD);
 			}
 			//ro
@@ -882,6 +915,7 @@ class lexer
 				return checkGreaterThan(itr);
 			}
 			if (it == '=') {
+				itr++;
 				return token("=", TokenType::EQUALTO);
 			}
 			//special characters
@@ -890,8 +924,13 @@ class lexer
 				return token(",", TokenType::COM);
 			}
 			if (it == '#') {
+				while (*itr != '\n')
+				{
+					itr++;
+				}
 				itr++;
-				return token("#", TokenType::HASH);
+				it = *itr;
+				//return token("#", TokenType::HASH);
 			}
 			if (it == ';') {
 				itr++;

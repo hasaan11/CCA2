@@ -6,9 +6,9 @@ int main(int argc, char* argv[])
 {
 	int x = 0;
 	//asking for file name as command line arguments
-	if (argc == 2)
+	if (x == 0)
 	{
-		lexer _lexer(argv[1);
+		lexer _lexer("sampe_code4.mc");
 		token t;
 		t = _lexer.getNextToken();
 		while (t.tokenType != TokenType::END_OF_FILE)

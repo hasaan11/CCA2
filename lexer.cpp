@@ -55,7 +55,7 @@ token::token(string lexeme, TokenType tokenType)
 void token::Print()
 {
     cout << "{" << lexeme << " , "
-        << (int)tokenType << "}\n";
+        << reserved[(int)tokenType] << "}\n";
 }
 int lexer::getCurrentPointer()
 {
@@ -144,6 +144,8 @@ token lexer::getNextToken()
     }
     return _token;
 }
+
+
 void lexer::resetPointer()
 {
     index = 0;
