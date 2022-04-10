@@ -46,8 +46,9 @@ enum class TokenType
 	COM,     //,
 	HASH,    //#
 	COL,     // :
-	SCOL     // ;
-
+	SCOL,     // ;
+	LPARAN,
+	RPARAN
 };
 //structure of a token 
 struct token

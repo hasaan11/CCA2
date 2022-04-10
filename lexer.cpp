@@ -40,7 +40,9 @@ string reserved[] = {
     "COM",     //,
     "HASH",    //#
     "COL",     // :
-    "SCOL"     // ;
+    "SCOL",     // ;
+    "LPARAN",
+    "RPARAN"     // ;
 	};
 token::token()
 {
