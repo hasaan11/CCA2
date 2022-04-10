@@ -156,6 +156,8 @@ bool parser::codeBlock()
 
 bool parser::statements()
 {
+    //general parts of the sample codes
+    //statements->declare | input | print | loop | if | functionCall | return_ | null
     declare();
     input();
     print();
@@ -169,47 +171,186 @@ bool parser::statements()
 
 bool parser::declare()
 {
-
+    //initialization lists and declarations
+    //declare->ID initializer declare2 datatype SCOL statements
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        initializer();
+        declare2();
+        datatype();
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            statements();
+            return true;
+        }
+    }
+    return false;
 }
 
 bool parser::declare2()
 {
-
+    //declare2 -> COMMA ID initializer declare2 | null
+    if (_lexer.peek(1).tokenType == TokenType::COM)
+    {
+        expect(TokenType::COM);
+        if (_lexer.peek(1).tokenType == TokenType::ID)
+        {
+            expect(TokenType::ID);
+            initializer();
+            declare2();
+            return true;
+        }
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::initializer()
 {
+    //initializer -> AO value2 | null
+    if (_lexer.peek(1).tokenType == TokenType::AO)
+    {
+        expect(TokenType::AO);
+        value2();
+        return true;
+    }
+    return false;
+}
 
+bool parser::value2()
+{
+    if (expression() == true)
+    {
+        return true;
+    }
+    if (value() == true)
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::expression()
 {
-
+    //handles the precedence of operators
+    //expression->t expression2
+    t();
+    expression2();
+    //return???
 }
 
 bool parser::expression2()
 {
-
+    //expression2 -> PLUS t expression2 | MINUS t expression2 | null
+    if (_lexer.peek(1).tokenType == TokenType::PLUS)
+    {
+        expect(TokenType::PLUS);
+        t();
+        expression2();
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::MINUS)
+    {
+        expect(TokenType::MINUS);
+        t();
+        expression2();
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::t()
 {
-
+    //t -> f t2
+    f();
+    t2();
+    //return??
 }
 
 bool parser::t2()
 {
-
+    //t2 -> MUL f t2 | DIV f t2 | MOD f t2 | null
+    if (_lexer.peek(1).tokenType == TokenType::MUL)
+    {
+        expect(TokenType::MUL);
+        f();
+        t2();
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::DIV)
+    {
+        expect(TokenType::DIV);
+        f();
+        t2();
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::MOD)
+    {
+        expect(TokenType::MOD);
+        f();
+        t2();
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::f()
 {
-
+    //f -> ID | NL | LPARAN expression RPARAN
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        return true;
+    }
+    else  if (_lexer.peek(1).tokenType == TokenType::NL)
+    {
+        expect(TokenType::NL);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::LPARAN)
+    {
+        expect(TokenType::LPARAN);
+        expression();
+        if (_lexer.peek(1).tokenType == TokenType::RPARAN)
+        {
+            expect(TokenType::RPARAN);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool parser::value()
 {
-
+    if (_lexer.peek(1).tokenType == TokenType::NL)
+    {
+        expect(TokenType::NL);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::CL)
+    {
+        expect(TokenType::CL);
+        return true;
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        return true;
+    }
+    return false;
 }
 
 bool parser::input()
