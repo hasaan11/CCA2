@@ -102,22 +102,69 @@ bool parser::datatype()
 
 bool parser::parameters()
 {
-
+    //parameters for a function call
+    //parameters->ID datatype parameters2 | null
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+        datatype();
+        parameters2();
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 bool parser::parameters2()
 {
-
+    //parameters2 -> COMMA ID datatype parameters2 | null
+    if (_lexer.peek(1).tokenType == TokenType::COM)
+    {
+        expect(TokenType::COM);
+        if (_lexer.peek(1).tokenType == TokenType::ID)
+        {
+            expect(TokenType::ID);
+            datatype();
+            parameters2();
+            return true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool parser::codeBlock()
 {
-
+    //ensures there is at least one occurence of a statement
+    //codeBlock->declare | input | print | loop | if_ | functionCall | return
+    declare();
+    input();
+    print();
+    loop();
+    if_();
+    functionCall();
+    return_();
+    //return true;
+//return false;
 }
 
 bool parser::statements()
 {
-
+    declare();
+    input();
+    print();
+    loop();
+    if_();
+    functionCall();
+    return_();
+    //else null return true;
+ //return false;
 }
 
 bool parser::declare()
@@ -205,7 +252,7 @@ bool parser::funtionCall()
 
 }
 
-bool parser::return()
+bool parser::return_()
 {
 
 }
