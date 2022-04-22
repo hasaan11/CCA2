@@ -41,4 +41,27 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="sampe_code4.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code_custom.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code0.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code1.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code2.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sample_code3.mc">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

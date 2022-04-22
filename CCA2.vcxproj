@@ -31,6 +31,15 @@
   <ItemGroup>
     <Text Include="symbol_table.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="sampe_code4.mc" />
+    <None Include="sample_code.mc" />
+    <None Include="sample_code0.mc" />
+    <None Include="sample_code1.mc" />
+    <None Include="sample_code2.mc" />
+    <None Include="sample_code3.mc" />
+    <None Include="sample_code_custom.mc" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

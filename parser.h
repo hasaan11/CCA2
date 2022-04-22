@@ -36,6 +36,7 @@ public:
     bool value();
     bool input();
     bool print();
+    bool println();
     bool value3();
     bool loop();
     bool rightAssign();

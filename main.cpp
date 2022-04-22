@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 		//	t = _lexer.getNextToken();
 		//	
 		//}
-		parser Parser("sample_code3.mc");
+		parser Parser("sampe_code4.mc");
 		cout << "********************** Parser Starts from here **********************" << endl;
 		// Parser Starts
 		Parser.start();

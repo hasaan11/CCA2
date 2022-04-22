@@ -180,6 +180,10 @@ bool parser::codeBlock()
     {
         return true;
     }
+    else if (println() == true)
+    {
+        return true;
+    }
     else if (loop() == true)
     {
         return true;
@@ -212,6 +216,10 @@ bool parser::statements()
         return true;
     }
     else if (print() == true)
+    {
+        return true;
+    }
+    else if (println() == true)
     {
         return true;
     }
@@ -263,6 +271,7 @@ bool parser::declare()
     
 }
 
+// handles multiple assignments
 bool parser::declare2()
 {
     //declare2 -> COMMA ID initializer declare2 | null
@@ -468,6 +477,17 @@ bool parser::print()
     if (_lexer.peek(1).tokenType == TokenType::PRINT)
     {
         expect(TokenType::PRINT);
+        value3();
+        return true;
+    }
+    return false;
+}
+
+bool parser::println()
+{
+    if (_lexer.peek(1).tokenType == TokenType::PRINTLN)
+    {
+        expect(TokenType::PRINTLN);
         value3();
         return true;
     }
