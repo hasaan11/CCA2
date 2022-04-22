@@ -612,7 +612,7 @@ bool parser::rightAssign()
 bool parser::if_()
 {
     //if statement
-    //if_->IF expression ro expression COL BEGIN statements END else_ statements
+    //if_->IF expression ro expression COL BEGIN statements END  elif else_ statements
     if (_lexer.peek(1).tokenType == TokenType::IF)
     {
         expect(TokenType::IF);
@@ -629,6 +629,7 @@ bool parser::if_()
                 if (_lexer.peek(1).tokenType == TokenType::END)
                 {
                     expect(TokenType::END);
+                    elif();
                     else_();
                     statements();
                     return true;
@@ -637,6 +638,36 @@ bool parser::if_()
         }
     }
     return false;
+}
+bool parser::elif()
+{
+    //elif statement
+    //ELIF-> ELIF expression ro expression COL BEGIN statements END elif else_ statements
+    if (_lexer.peek(1).tokenType == TokenType::ELIF)
+    {
+        expect(TokenType::ELIF);
+        expression();
+        relationalOperators();
+        expression();
+        if (_lexer.peek(1).tokenType == TokenType::COL)
+        {
+            expect(TokenType::COL);
+            if (_lexer.peek(1).tokenType == TokenType::BG)
+            {
+                expect(TokenType::BG);
+                statements();
+                if (_lexer.peek(1).tokenType == TokenType::END)
+                {
+                    expect(TokenType::END);
+                    elif();
+                    else_();
+                    statements();
+                    return true;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 bool parser::else_()
@@ -664,7 +695,7 @@ bool parser::else_()
     {
         return true;
     }
-    return false;
+    
 }
 
 bool parser::relationalOperators()

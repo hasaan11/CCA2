@@ -42,6 +42,7 @@ public:
     bool rightAssign();
     bool if_();
     bool else_();
+    bool elif();
     bool relationalOperators();
     bool funtionCall();
     bool return_();
