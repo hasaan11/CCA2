@@ -26,6 +26,10 @@
   <ItemGroup>
     <ClInclude Include="lexer.h" />
     <ClInclude Include="parser.h" />
+    <ClInclude Include="symbol_table.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="symbol_table.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

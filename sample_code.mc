@@ -25,7 +25,3 @@ begin # Three address code generation starts after here
 	end
 	return 0;#halts program
 end
-#bonus work
-1) inline multiple declarations
-2) function support
-3) control flow and loop nesting

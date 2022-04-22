@@ -1,17 +1,29 @@
 #include "parser.h"
+#include "symbol_table.h"
+#include <vector>
+#include <fstream>
+using namespace std;
+
+
 
 void parser::syntax_error()
 {
     cout << "SYNTAX ERROR\n";
+    system("PAUSE");
     exit(1);
 }
 token parser::expect(TokenType expected_type)
 {
     token t = _lexer.getNextToken();
+    t.Print();
     if (t.tokenType != expected_type)
         syntax_error();
+   
     return t;
 }
+
+
+
 parser::parser(const char filename[])
 {
     _lexer = lexer(filename);
@@ -55,22 +67,34 @@ void parser::resetPointer()
 bool parser::start()
 {
     //marks the start of the code
-    //start->FUNC datatype ID parameters COL BEGIN codeBlock END
+    //start->FUNC datatype ID parameters COL BEGIN codeBlock END start_
+    
+    
     if (_lexer.peek(1).tokenType == TokenType::FUNC)
     {
         expect(TokenType::FUNC);
-        datatype();
+        if (datatype() == false)
+        {
+            syntax_error();
+        }
+
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
             expect(TokenType::ID);
-            parameters();
+            if (parameters() == false)
+            {
+                syntax_error();
+            }
             if (_lexer.peek(1).tokenType == TokenType::COL)
             {
                 expect(TokenType::COL);
                 if (_lexer.peek(1).tokenType == TokenType::BG)
                 {
                     expect(TokenType::BG);
-                    codeBlock();
+                    if (codeBlock() == false)
+                    {
+                        syntax_error();
+                    }
                     if (_lexer.peek(1).tokenType == TokenType::END)
                     {
                         expect(TokenType::END);
@@ -81,6 +105,7 @@ bool parser::start()
             }
         }
     }
+    syntax_error();
     return false;
 }
 
@@ -92,7 +117,7 @@ bool parser::datatype()
         expect(TokenType::INT);
         return true;
     }
-    else 
+    else if (_lexer.peek(1).tokenType == TokenType::CHAR)
     {
         expect(TokenType::CHAR);
         return true;
@@ -163,10 +188,10 @@ bool parser::codeBlock()
     {
         return true;
     }
-    else if (functionCall() == true)
+   /* else if (functionCall() == true)
     {
         return true;
-    }
+    }*/
     else if (return_() == true)
     {
         return true;
@@ -198,20 +223,23 @@ bool parser::statements()
     {
         return true;
     }
-    else if (functionCall() == true)
+    /*else if (functionCall() == true)
     {
         return true;
-    }
+    }*/
     else if (return_() == true)
     {
         return true;
     }
+
     else
     {
         return true;
     }
-    return false;
+    //return false;
 }
+
+// can add declare3 which will go to datatype OR null
 
 bool parser::declare()
 {
@@ -222,6 +250,7 @@ bool parser::declare()
         expect(TokenType::ID);
         initializer();
         declare2();
+        //declare3();
         datatype();
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
@@ -229,8 +258,9 @@ bool parser::declare()
             statements();
             return true;
         }
+        return false;
     }
-    return false;
+    
 }
 
 bool parser::declare2()
@@ -246,7 +276,9 @@ bool parser::declare2()
             declare2();
             return true;
         }
+
     }
+
     else
     {
         return true;
@@ -261,9 +293,11 @@ bool parser::initializer()
     {
         expect(TokenType::AO);
         value2();
+        //datatype();
         return true;
     }
-    return false;
+   
+    return true;
 }
 
 bool parser::value2()
@@ -272,11 +306,12 @@ bool parser::value2()
     {
         return true;
     }
-    if (value() == true)
+    if (value() == true)  
     {
+        
         return true;
     }
-    return false;
+    syntax_error();
 }
 
 bool parser::expression()
@@ -314,6 +349,7 @@ bool parser::expression2()
     return false;
 }
 
+//low Precedence
 bool parser::t()
 {
     //t -> f t2
@@ -324,6 +360,7 @@ bool parser::t()
     return t2();
 }
 
+//highPrecedence
 bool parser::t2()
 {
     //t2 -> MUL f t2 | DIV f t2 | MOD f t2 | null
@@ -355,6 +392,7 @@ bool parser::t2()
     return false;
 }
 
+// allotValue
 bool parser::f()
 {
     //f -> ID | NL | LPARAN expression RPARAN
@@ -408,7 +446,7 @@ bool parser::input()
     //input->IN ID SCOL statements
     if (_lexer.peek(1).tokenType == TokenType::IN)
     {
-        expect(tokenType::IN);
+        expect(TokenType::IN);
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
             expect(TokenType::ID);
@@ -495,9 +533,11 @@ bool parser::loop()
                         expression();
                         relationalOperators();
                         expression();
-                        if (_lexer.peek(1).tokenType == TokenType::COM)
+                        TokenType t;
+                        t = _lexer.peek(1).tokenType;
+                        if (t == TokenType::SCOL || t == TokenType::COM)
                         {
-                            expect(TokenType::COM);
+                            expect(t);
                             if (_lexer.peek(1).tokenType == TokenType::ID)
                             {
                                 expect(TokenType::ID);
@@ -546,7 +586,7 @@ bool parser::rightAssign()
             return true;
         }
     }
-    rerutn false;
+    return false;
 }
 
 bool parser::if_()
@@ -585,14 +625,18 @@ bool parser::else_()
     if (_lexer.peek(1).tokenType == TokenType::ELSE)
     {
         expect(TokenType::ELSE);
-        if (_lexer.peek(1).tokenType == TokenType::BG)
+        if (_lexer.peek(1).tokenType == TokenType::COL)
         {
-            expect(TokenType::BG);
-            statements();
-            if (_lexer.peek(1).tokenType == TokenType::END)
+            expect(TokenType::COL);
+            if (_lexer.peek(1).tokenType == TokenType::BG)
             {
-                expect(TokenType::END);
-                return true;
+                expect(TokenType::BG);
+                statements();
+                if (_lexer.peek(1).tokenType == TokenType::END)
+                {
+                    expect(TokenType::END);
+                    return true;
+                }
             }
         }
     }
@@ -640,13 +684,13 @@ bool parser::relationalOperators()
     return false;
 }
 
-bool parser::funtionCall()
-{
-    //function call, general implementation that can send multiple parameters (optional in this assignment)
-    //functionCall -> CALL ID id2 SCOL statements
-    //id2 -> ID id3 | null
-    //id3 -> COMMA id3 | null
-}
+//bool parser::funtionCall()
+//{
+//    //function call, general implementation that can send multiple parameters (optional in this assignment)
+//    //functionCall -> CALL ID id2 SCOL statements
+//    //id2 -> ID id3 | null
+//    //id3 -> COMMA id3 | null
+//}
 
 bool parser::return_()
 {
@@ -682,4 +726,77 @@ bool parser::value4()
         }
     }
     return false;
+}
+
+
+
+
+void parser::create_symbol_table()
+{
+    vector<token> tokens = _lexer.return_token();
+    vector<symbol_table_element> table;
+
+    vector<token> ::iterator itr = tokens.begin();
+
+    // populate the  table;
+    while (itr != tokens.end())
+    {
+
+        token* current = new token(*itr);
+        if (current->tokenType == TokenType::ID)
+        {
+            // check if Identifier is a function
+            itr = itr - 2;
+            if (itr->tokenType == TokenType::FUNC)
+            {
+                table.push_back(symbol_table_element(current->lexeme, "FUNC"));
+                itr = itr + 2;
+            }
+            else
+            {
+                itr = itr + 2;
+                int count = 0;
+                while (itr->tokenType != TokenType::SCOL)
+                {
+                    TokenType temp = itr->tokenType;
+                    
+                    if (temp == TokenType::CHAR || temp == TokenType::INT)
+                    {
+                        string type;
+                        if (temp == TokenType::CHAR)
+                        {
+                            type = "CHAR";
+                        }
+                        else
+                        {
+                            type = "INT";
+                        }
+                        table.push_back(symbol_table_element(current->lexeme, type));
+                        itr = itr - count;
+                        
+                        break;
+                    }
+                    count++;
+                    ++itr;
+                }
+            }
+        }
+        ++itr;
+    }
+
+
+    // write to file
+    ofstream fin;
+    fin.open("symbol_table.txt");
+    if (!fin)
+    {
+        cout << "Error in opening the file";
+        EXIT_FAILURE;
+    }
+
+    for (int i = 0; i < table.size(); i++)
+    {
+        fin << table[i].lexeme << " " << table[i].type << endl;
+    }
+
 }

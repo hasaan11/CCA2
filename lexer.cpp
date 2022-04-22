@@ -72,6 +72,7 @@ void lexer::setCurrentPointer(int pos)
 }
 
 
+
 void lexer::Tokenize()//function that tokenizes your input stream
 {
     string lexeme;

@@ -1,0 +1,8 @@
+calcculateFib FUNC
+n INT
+x INT
+y INT
+z INT
+i INT
+main FUNC
+num INT

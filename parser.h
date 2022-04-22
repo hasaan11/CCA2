@@ -5,9 +5,11 @@
 class parser
 {
     lexer _lexer;
+    vector<token> parse_table;
 public:
     void syntax_error();
     token expect(TokenType expected_type);
+    void create_symbol_table();
     parser(const char filename[]);
     void readAndPrintAllInput();
     void resetPointer();
