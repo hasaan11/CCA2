@@ -304,7 +304,7 @@ bool parser::declare2()
     {
         return true;
     }
-    return false;
+    
 }
 
 bool parser::initializer()

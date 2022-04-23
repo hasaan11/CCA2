@@ -29,6 +29,7 @@
     <ClInclude Include="symbol_table.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\..\Downloads\group 3.txt" />
     <Text Include="symbol_table.txt" />
   </ItemGroup>
   <ItemGroup>

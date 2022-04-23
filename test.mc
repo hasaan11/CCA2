@@ -1,4 +1,4 @@
 func int main:
 begin
-	shenk <- id;
+	 shenk int;
 end

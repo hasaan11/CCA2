@@ -40,6 +40,9 @@
     <Text Include="symbol_table.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\..\Downloads\group 3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="sampe_code4.mc">

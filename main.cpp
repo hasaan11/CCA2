@@ -4,9 +4,9 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	int x = 0;
+	cout << argv[1];
 	//asking for file name as command line arguments
-	if (x == 0)
+	if (argc == 2)
 	{
 		//lexer _lexer("sample_code0.mc");
 		//token t;
@@ -17,11 +17,11 @@ int main(int argc, char* argv[])
 		//	t = _lexer.getNextToken();
 		//	
 		//}
-		parser Parser("test.mc");
+		parser Parser(argv[1]);
 		cout << "********************** Parser Starts from here **********************" << endl;
 		// Parser Starts
 		Parser.start();
-		// creates symbol table
+		// Parser creates symbol table
 		Parser.create_symbol_table();
 	
 

@@ -783,6 +783,7 @@ public:
 			if (*itr == '\'')
 			{
 				lexeme = lexeme + *itr;
+				itr++;
 				return token(lexeme, TokenType::CL);
 			}
 			else
