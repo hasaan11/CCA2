@@ -38,7 +38,6 @@
     <None Include="sample_code1.mc" />
     <None Include="sample_code2.mc" />
     <None Include="sample_code3.mc" />
-    <None Include="sample_code_custom.mc" />
     <None Include="test.mc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -249,7 +249,7 @@ bool parser::statements()
     {
         return true;
     }
-    //return false;
+    return false;
 }
 
 // can add declare3 which will go to datatype OR null
@@ -260,11 +260,18 @@ bool parser::declare()
     //declare->ID initializer declare2 datatype SCOL statements
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        bool flag = 1;
         expect(TokenType::ID);
-        initializer();
+        if (initializer() == false)
+        {
+            flag = 0;
+        }
         declare2();
         //declare3();
-        datatype();
+        if(datatype() == false && flag == 0)
+        {
+            return false;
+        }
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
             expect(TokenType::SCOL);
@@ -302,7 +309,7 @@ bool parser::declare2()
 
 bool parser::initializer()
 {
-    //initializer -> AO value2 | null
+    //initializer -> AO value2 
     if (_lexer.peek(1).tokenType == TokenType::AO)
     {
         expect(TokenType::AO);
@@ -311,7 +318,7 @@ bool parser::initializer()
         return true;
     }
    
-    return true;
+    return false;
 }
 
 bool parser::value2()

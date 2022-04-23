@@ -48,9 +48,6 @@
     <None Include="sample_code.mc">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sample_code_custom.mc">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="sample_code0.mc">
       <Filter>Resource Files</Filter>
     </None>
