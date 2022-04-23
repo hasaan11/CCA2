@@ -63,5 +63,8 @@
     <None Include="sample_code3.mc">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="test.mc">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

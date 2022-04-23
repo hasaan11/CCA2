@@ -67,7 +67,7 @@ void parser::resetPointer()
 bool parser::start()
 {
     //marks the start of the code
-    //start->FUNC datatype ID parameters COL BEGIN codeBlock END start_
+    //start->FUNC datatype ID parameters COL BEGIN codeBlock END start | null
     
     
     if (_lexer.peek(1).tokenType == TokenType::FUNC)
@@ -98,15 +98,21 @@ bool parser::start()
                     if (_lexer.peek(1).tokenType == TokenType::END)
                     {
                         expect(TokenType::END);
-                        return true;
+                        if (start() == true) {
+                            return true;
+                        }
+                        else
+                        {
+                            syntax_error();
+                        }
                     }
                 }
                
             }
         }
     }
-    syntax_error();
-    return false;
+    
+    return true;
 }
 
 bool parser::datatype()
@@ -192,10 +198,10 @@ bool parser::codeBlock()
     {
         return true;
     }
-   /* else if (functionCall() == true)
+    else if (functionCall() == true)
     {
         return true;
-    }*/
+    }
     else if (return_() == true)
     {
         return true;
@@ -231,15 +237,14 @@ bool parser::statements()
     {
         return true;
     }
-    /*else if (functionCall() == true)
+    else if (functionCall() == true)
     {
         return true;
-    }*/
+    }
     else if (return_() == true)
     {
         return true;
     }
-
     else
     {
         return true;
@@ -642,7 +647,7 @@ bool parser::if_()
 bool parser::elif()
 {
     //elif statement
-    //ELIF-> ELIF expression ro expression COL BEGIN statements END elif else_ statements
+    //elif-> elif expression ro expression COL BEGIN statements END elif else_ statements | null
     if (_lexer.peek(1).tokenType == TokenType::ELIF)
     {
         expect(TokenType::ELIF);
@@ -735,13 +740,62 @@ bool parser::relationalOperators()
     return false;
 }
 
-//bool parser::funtionCall()
-//{
-//    //function call, general implementation that can send multiple parameters (optional in this assignment)
-//    //functionCall -> CALL ID id2 SCOL statements
-//    //id2 -> ID id3 | null
-//    //id3 -> COMMA id3 | null
-//}
+bool parser::functionCall()
+{
+    //function call, general implementation that can send multiple parameters (optional in this assignment)
+    //functionCall -> CALL ID id2 SCOL statements
+    //id2 -> ID id3 | null
+    //id3 -> COMMA id2 | null
+
+    
+    if (_lexer.peek(1).tokenType == TokenType::CALL)
+    {
+        expect(TokenType::CALL);
+        if (_lexer.peek(1).tokenType == TokenType::ID)
+        {
+            expect(TokenType::ID);
+            if(id2() == false)
+            {
+                return false;
+            }
+
+            if (_lexer.peek(1).tokenType == TokenType::SCOL)
+            {
+                expect(TokenType::SCOL);
+                statements();
+            }
+
+        }
+        
+    }
+    return false;
+}
+
+
+bool parser::id2()
+{
+    if (_lexer.peek(1).tokenType == TokenType::ID)
+    {
+        expect(TokenType::ID);
+     
+        return id3();
+        
+
+    }
+    return true;
+}
+
+bool parser::id3()
+{
+    if (_lexer.peek(1).tokenType == TokenType::COM)
+    {
+        expect(TokenType::COM);
+        return id2();
+
+    }
+    return true;
+
+}
 
 bool parser::return_()
 {

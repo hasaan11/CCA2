@@ -44,8 +44,10 @@ public:
     bool else_();
     bool elif();
     bool relationalOperators();
-    bool funtionCall();
+    bool functionCall();
     bool return_();
     bool value4();
+    bool id2();
+    bool id3();
 };
 #endif
