@@ -249,7 +249,7 @@ bool parser::statements()
     {
         return true;
     }
-    return false;
+
 }
 
 // can add declare3 which will go to datatype OR null
@@ -509,7 +509,17 @@ bool parser::println()
 bool parser::value3()
 {
     //value3 -> ID SCOL statements | STR SCOL statements | expression SCOL statements
-    if (_lexer.peek(1).tokenType == TokenType::ID)
+
+    if (expression() == true)
+    {
+        if (_lexer.peek(1).tokenType == TokenType::SCOL)
+        {
+            expect(TokenType::SCOL);
+            statements();
+            return true;
+        }
+    }
+    else if (_lexer.peek(1).tokenType == TokenType::ID)
     {
         expect(TokenType::ID);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
@@ -529,9 +539,9 @@ bool parser::value3()
             return true;
         }
     }
-    else
+    else if (_lexer.peek(1).tokenType == TokenType::CL)
     {
-        expression();
+        expect(TokenType::CL);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
             expect(TokenType::SCOL);
@@ -539,6 +549,7 @@ bool parser::value3()
             return true;
         }
     }
+
     return false;
 }
 
@@ -769,7 +780,7 @@ bool parser::functionCall()
             if (_lexer.peek(1).tokenType == TokenType::SCOL)
             {
                 expect(TokenType::SCOL);
-                statements();
+                return statements();
             }
 
         }

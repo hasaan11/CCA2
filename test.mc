@@ -1,4 +1,7 @@
-func int main:
+func int main shenk int, wenk char:
 begin
-	 shenk int;
+	
+	
+	
+		return 20;
 end
