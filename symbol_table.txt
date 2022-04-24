@@ -1,3 +1,9 @@
 main FUNC
-shenk INT
-wenk CHAR
+n1 INT
+n2 INT
+hcf INT
+n2 INT
+n1 INT
+temp INT
+n2 INT
+i INT

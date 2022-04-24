@@ -33,8 +33,6 @@
     <Text Include="symbol_table.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="sampe_code4.mc" />
-    <None Include="sample_code.mc" />
     <None Include="sample_code0.mc" />
     <None Include="sample_code1.mc" />
     <None Include="sample_code2.mc" />

@@ -764,7 +764,7 @@ bool parser::functionCall()
     //functionCall -> CALL ID id2 SCOL statements
     //id2 -> ID id3 | null
     //id3 -> COMMA id2 | null
-
+    
     
     if (_lexer.peek(1).tokenType == TokenType::CALL)
     {
