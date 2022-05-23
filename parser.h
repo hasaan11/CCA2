@@ -4,8 +4,10 @@
 //for future assignments leave it as it is
 class parser
 {
+
     lexer _lexer;
     vector<token> parse_table;
+    vector<string> tacs;
 public:
     void syntax_error();
     token expect(TokenType expected_type);
@@ -26,28 +28,30 @@ public:
     bool statements();
     bool declare();
     bool declare2();
-    bool initializer();
-    bool value2();
-    bool expression();
-    bool expression2();
-    bool t();
-    bool t2();
-    bool f();
-    bool value();
+    bool initializer(string & n);
+    bool value2(string & n);
+    bool expression(string & n);
+    bool expression2(string & n);
+    bool t(string & n);
+    bool t2(string & n);
+    bool f(string & n);
+    bool value(string & n);
     bool input();
     bool print();
     bool println();
-    bool value3();
+    bool value3(string & n);
     bool loop();
-    bool rightAssign();
+    bool rightAssign(string & n);
     bool if_();
     bool else_();
     bool elif();
-    bool relationalOperators();
+    bool relationalOperators(string& n);
     bool functionCall();
     bool return_();
-    bool value4();
-    bool id2();
-    bool id3();
+    bool value4(string & n);
+    bool id2(string & n);
+    bool id3(string & n);
+    void get_tacs();
+    void write_tac_to_file();
 };
 #endif

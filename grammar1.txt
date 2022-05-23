@@ -1,0 +1,64 @@
+//marks the start of the code
+start->FUNC datatype ID parameters COL BEGIN codeBlock END start | null
+
+datatype -> INT | CHAR
+
+//parameters for a function call
+parameters->ID datatype parameters2 | null
+parameters2 -> COMMA ID datatype parameters2 | null
+
+//ensures there is at least one occurence of a statement
+codeBlock-> declare | input | print |println | functionCall | loop | if_ | functionCall | return_ 
+
+//general parts of the sample codes
+statements -> declare | input | print | println | loop | if_ | functionCall | return_ | null
+
+declare->ID initializer declare2 datatype SCOL statements 
+initializer -> AO value2 | null
+declare2 -> COMMA ID initializer declare2 | null  (arguments)
+
+Assign ->ID initializer declare2 SCOL statements
+
+//value
+value -> ID | CL | NL
+value2 -> expression | value
+
+//handles the precedence of operators
+expression -> lowPrecedence expression2
+expression2 -> PLUS lowPrecedence expression2 | MINUS lowPrecedence expression2 | null
+lowPrecedence -> allotValue highPrecedence
+highPrecedence -> MUL allotValue highPrecedence | DIV allotValue highPrecedence | MOD allotValue highPrecedence | null
+allotValue -> ID | NL | LPARAN expression RPARAN
+
+//input statement
+input -> IN ID SCOL statements
+
+//print statement
+print -> PRINT print2
+print2 -> ID SCOL statements | STR SCOL statements | expression SCOL statements
+
+//println statement
+println -> PRINTLN print2
+
+//for loop
+loop -> FOR declareInt COMMA expression ro expression COMMA ID AO rightAssign COLON
+	BEGIN statements END statements  //ID AO NL 
+
+rightAssign -> expression | NL
+
+//if statement
+if_ -> IF expression ro expression COL BEGIN statements END else_ statements
+elif -> ELIF expression ro expression COL BEGIN statements END else_ statements
+else_ -> ELSE BEGIN statements END | null
+
+//relational operators
+ro -> EQUALTO | LEQ | LESSTHAN | GEQ | GRTHAN | NOTEQUALS
+
+//function call, general implementation that can send multiple parameters
+functionCall -> CALL ID variableName SCOL statements
+variableName  -> ID variableName2 | null
+variableName2  -> COMMA variableName | null
+
+//return 
+return_ -> RETURN return2
+return2 -> ID SCOL | valueChar SCOL | valueInt SCOL

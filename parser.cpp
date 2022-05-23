@@ -2,7 +2,191 @@
 #include "symbol_table.h"
 #include <vector>
 #include <fstream>
+#include <stack>
 using namespace std;
+
+vector<string> tacs;
+int new_variable_counter = 1;
+
+void backpatch(vector<string> &tacs)
+{
+    int c = 0;
+    int i = tacs.size()-1;
+    string temp = "";
+    while (1)
+    {
+        temp = tacs[i];
+        if (temp == "goto ")
+        {
+            tacs[i] = temp + to_string(i + c + 1);
+            return;
+        }
+        c++;
+        i--;
+    }
+
+
+}
+void backpatch_loop(vector<string>& tacs, string loop_start)
+{
+    int c = 0;
+    int i = tacs.size() - 1;
+    string temp = "";
+
+    
+    while (1)
+    {
+        temp = tacs[i];
+        if (temp == loop_start)
+        {
+            tacs[tacs.size() - 1] = tacs[tacs.size() - 1] + to_string(tacs.size() -1  - c);
+            return;
+        }
+        c++;
+        i--;
+    }
+}
+
+bool not_operand(char c)
+{
+    if (c == '+' || c == '-' || c == '/' || c == '*' || c == '%')
+    {
+        return false;
+    }
+    return true;
+
+}
+void tac_for_assignments(vector<string>& tacs, string str)
+{
+
+    if (str.size() > 8)
+    {
+        stack<string> stk;
+
+        int start = 4;
+        int i = 4;
+
+        // push the left variable to stack;
+        string a = "", b = "";
+        a = a + str[0] + str[1];
+        b = b + str[2] + str[3];
+        stk.push(a);
+        stk.push(b);
+        // this while loop generates priority tacs and creates a stack
+        string word = "";
+        while (1)
+        {
+            if (str[i] == ';')
+            {
+                stk.push(word);
+                break;
+            }
+            
+            if (str[i] == '=' || str[i] == '+' || str[i] == '-')
+            {
+                stk.push(word); 
+                word = ""; // reset the word variable
+                char op = str[i];
+                string operand = "";
+                operand = operand + op;
+                
+                stk.push(operand);
+            }
+
+            else if (str[i] == '/' || str[i] == '%' || str[i] == '*')
+            {
+                
+                char operand = str[i];
+                string x = word;
+                
+
+                int fwd_index = i + 1;
+                string y = "";
+                while (not_operand(str[fwd_index]) && str[fwd_index] != ';')
+                {
+                    y = y + str[fwd_index];
+                    fwd_index++;
+                }
+
+                i = fwd_index - 1;
+                start = fwd_index - 1;
+                // new equation
+                string new_variable = 't' + to_string(new_variable_counter);
+                string tac = new_variable + " = " + x + operand + y + ';';
+                tacs.push_back(tac); // push the string to the tacs
+                //stk.push(new_variable);
+                new_variable_counter++;
+
+                word = new_variable;
+
+            }
+            else
+            {
+                word = word + str[i];
+            }
+            i++;
+        }
+        // empty the stack
+        while (stk.size() > 3)
+        {
+            string y = stk.top();
+            stk.pop();
+            string operand = stk.top();
+            stk.pop();
+            string x = stk.top();
+            stk.pop();
+
+            string new_variable = 't' + to_string(new_variable_counter);
+            string tac = new_variable + " = " + x + operand + y + ';';
+            tacs.push_back(tac); // push the string to the tacs
+            stk.push(new_variable);
+            new_variable_counter++;
+            
+        }
+
+        string y = stk.top();
+        stk.pop();
+        string operand = stk.top();
+        stk.pop();
+        string x = stk.top();
+        stk.pop();
+
+        tacs.push_back(x + operand + y + ';');
+
+    }
+    else
+    {
+        tacs.push_back(str);
+    }
+}
+
+
+
+void parser::get_tacs()
+{
+    this->tacs = tacs;
+}
+
+
+void parser :: write_tac_to_file()
+{
+    ofstream fout;
+    fout.open("tac.txt");
+    if (!fout)
+    {
+        cout << "Error in opening the file!";
+        exit(-1);
+    }
+
+     for (int i = 0; i < tacs.size(); i++)
+    {
+        string temp = tacs[i];
+        fout << i << " " << temp << endl;
+    }
+
+
+    fout.close();
+}
 
 
 
@@ -21,7 +205,7 @@ token parser::expect(TokenType expected_type)
    
     return t;
 }
-
+ 
 
 
 parser::parser(const char filename[])
@@ -101,10 +285,11 @@ bool parser::start()
                         if (start() == true) {
                             return true;
                         }
-                        else
-                        {
-                            syntax_error();
-                        }
+
+                    }
+                    else
+                    {
+                        syntax_error();
                     }
                 }
                
@@ -114,7 +299,7 @@ bool parser::start()
     
     return true;
 }
-
+   
 bool parser::datatype()
 {
     //datatype -> INT | CHAR
@@ -245,9 +430,10 @@ bool parser::statements()
     {
         return true;
     }
+   
     else
     {
-        return true;
+        return false;
     }
 
 }
@@ -258,14 +444,26 @@ bool parser::declare()
 {
     //initialization lists and declarations
     //declare->ID initializer declare2 datatype SCOL statements
+    string tac = "";
+     
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        tac = tac + _lexer.peek(1).lexeme + " ";
+
         bool flag = 1;
         expect(TokenType::ID);
-        if (initializer() == false)
+        if (initializer(tac) == false)
         {
             flag = 0;
         }
+        else
+        {
+            tac = tac + ";";
+            // make a function which makes expression 
+            //tacs.push_back(tac);
+            tac_for_assignments(tacs, tac);
+        }
+        
         declare2();
         //declare3();
         if(datatype() == false && flag == 0)
@@ -292,8 +490,14 @@ bool parser::declare2()
         expect(TokenType::COM);
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
+            string tac = _lexer.peek(1).lexeme + " ";
             expect(TokenType::ID);
-            initializer();
+            if(initializer(tac) == true)
+            {
+                tac = tac + ";";
+                tacs.push_back(tac);
+            }
+            // idher TAC operation perform karo
             declare2();
             return true;
         }
@@ -307,13 +511,14 @@ bool parser::declare2()
     
 }
 
-bool parser::initializer()
+bool parser::initializer(string & str)
 {
     //initializer -> AO value2 
     if (_lexer.peek(1).tokenType == TokenType::AO)
     {
+        str = str + "= ";
         expect(TokenType::AO);
-        value2();
+        value2(str);
         //datatype();
         return true;
     }
@@ -321,13 +526,13 @@ bool parser::initializer()
     return false;
 }
 
-bool parser::value2()
+bool parser::value2(string & n)
 {
-    if (expression() == true)
+    if (expression(n) == true)
     {
         return true;
     }
-    if (value() == true)  
+    if (value(n) == true)  
     {
         
         return true;
@@ -335,32 +540,34 @@ bool parser::value2()
     syntax_error();
 }
 
-bool parser::expression()
+bool parser::expression(string & str)
 {
     //handles the precedence of operators
     //expression->t expression2
-    if (t() == false)
+    if (t(str) == false)
     {
         return false;
     }
-    return expression2();
+    return expression2(str);
 }
 
-bool parser::expression2()
+bool parser::expression2(string & str)
 {
     //expression2 -> PLUS t expression2 | MINUS t expression2 | null
     if (_lexer.peek(1).tokenType == TokenType::PLUS)
     {
+        str = str + "+";
         expect(TokenType::PLUS);
-        t();
-        expression2();
+        t(str);
+        expression2(str);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::MINUS)
     {
+        str = str + "-";
         expect(TokenType::MINUS);
-        t();
-        expression2();
+        t(str);
+        expression2(str);
         return true;
     }
     else
@@ -371,66 +578,71 @@ bool parser::expression2()
 }
 
 //low Precedence
-bool parser::t()
+bool parser::t(string & str)
 {
     //t -> f t2
-    if (f() == false)
+    if (f(str) == false)
     {
         return false;
     }
-    return t2();
+    return t2(str);
 }
 
 //highPrecedence
-bool parser::t2()
+bool parser::t2(string & str)
 {
     //t2 -> MUL f t2 | DIV f t2 | MOD f t2 | null
     if (_lexer.peek(1).tokenType == TokenType::MUL)
     {
+        str = str + "*";
         expect(TokenType::MUL);
-        f();
-        t2();
+        f(str);
+        t2(str);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::DIV)
     {
+        str = str + "/";
         expect(TokenType::DIV);
-        f();
-        t2();
+        f(str);
+        t2(str);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::MOD)
     {
+        str = str + "%";
         expect(TokenType::MOD);
-        f();
-        t2();
+        f(str);
+        t2(str);
         return true;
     }
     else
     {
         return true;
     }
-    return false;
+ 
 }
 
 // allotValue
-bool parser::f()
+bool parser::f(string & n)
 {
     //f -> ID | NL | LPARAN expression RPARAN
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::ID);
         return true;
     }
     else  if (_lexer.peek(1).tokenType == TokenType::NL)
-    {
+    {   
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::NL);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::LPARAN)
     {
         expect(TokenType::LPARAN);
-        expression();
+        expression(n);
         if (_lexer.peek(1).tokenType == TokenType::RPARAN)
         {
             expect(TokenType::RPARAN);
@@ -440,21 +652,24 @@ bool parser::f()
     return false;
 }
 
-bool parser::value()
+bool parser::value(string & n)
 {
     //value -> NL | CL | ID
     if (_lexer.peek(1).tokenType == TokenType::NL)
     {
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::NL);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::CL)
     {
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::CL);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::ID);
         return true;
     }
@@ -463,16 +678,22 @@ bool parser::value()
 
 bool parser::input()
 {
+    string tac = "";
+    tac = "in ";
     //input statement
     //input->IN ID SCOL statements
     if (_lexer.peek(1).tokenType == TokenType::IN)
-    {
+    {   
         expect(TokenType::IN);
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
+            tac = tac + _lexer.peek(1).lexeme + " ";
             expect(TokenType::ID);
             if (_lexer.peek(1).tokenType == TokenType::SCOL)
             {
+                tac = tac + ";";
+                tacs.push_back(tac);
+
                 expect(TokenType::SCOL);
                 statements();
                 return true;
@@ -488,9 +709,12 @@ bool parser::print()
     //print->PRINT value3 
     if (_lexer.peek(1).tokenType == TokenType::PRINT)
     {
+        string tac = "out ";
         expect(TokenType::PRINT);
-        value3();
+        value3(tac);
+        
         return true;
+        
     }
     return false;
 }
@@ -499,52 +723,65 @@ bool parser::println()
 {
     if (_lexer.peek(1).tokenType == TokenType::PRINTLN)
     {
+        string tac = "out ";
         expect(TokenType::PRINTLN);
-        value3();
+        value3(tac);
+        //add a line skip in tac
+        tacs.push_back("out '\n'");
         return true;
     }
     return false;
 }
 
-bool parser::value3()
+bool parser::value3(string & str)
 {
     //value3 -> ID SCOL statements | STR SCOL statements | expression SCOL statements
 
-    if (expression() == true)
+    if (expression(str) == true)
     {
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
+            
             expect(TokenType::SCOL);
+            tacs.push_back(str+';');
             statements();
             return true;
         }
     }
     else if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        str = str + _lexer.peek(1).lexeme;
         expect(TokenType::ID);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
+            
             expect(TokenType::SCOL);
+            tacs.push_back(str+';');
             statements();
             return true;
         }
     }
     else if (_lexer.peek(1).tokenType == TokenType::STR)
     {
+        str = str + _lexer.peek(1).lexeme;
         expect(TokenType::STR);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
+            
             expect(TokenType::SCOL);
+            tacs.push_back(str);
             statements();
             return true;
         }
     }
     else if (_lexer.peek(1).tokenType == TokenType::CL)
     {
+        str = str + _lexer.peek(1).lexeme;
         expect(TokenType::CL);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
             expect(TokenType::SCOL);
+            tacs.push_back(str);
             statements();
             return true;
         }
@@ -563,19 +800,37 @@ bool parser::loop()
         expect(TokenType::FOR);
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
+            string tac = _lexer.peek(1).lexeme;
             expect(TokenType::ID);
             if (_lexer.peek(1).tokenType == TokenType::AO)
             {
+                tac = tac + " = ";
                 expect(TokenType::AO);
                 if (_lexer.peek(1).tokenType == TokenType::NL)
                 {
+                    tac = tac + _lexer.peek(1).lexeme;
+                    // initalization statement
+                    tacs.push_back(tac);
+                    
                     expect(TokenType::NL);
                     if (_lexer.peek(1).tokenType == TokenType::COM)
                     {
                         expect(TokenType::COM);
-                        expression();
-                        relationalOperators();
-                        expression();
+                        string stopping_condition = "if ";
+                        if (expression(stopping_condition) == false) {
+                            syntax_error();
+                        }
+                        if (relationalOperators(stopping_condition) == false)
+                        {
+                            syntax_error();
+                        }
+                        if (expression(stopping_condition) == false)
+                        {
+                            syntax_error();
+                        }
+                        stopping_condition = stopping_condition + " goto " + to_string(tacs.size() + 2);
+                        tacs.push_back(stopping_condition);
+                        tacs.push_back("goto ");
                         TokenType t;
                         t = _lexer.peek(1).tokenType;
                         if (t == TokenType::SCOL || t == TokenType::COM)
@@ -583,11 +838,15 @@ bool parser::loop()
                             expect(t);
                             if (_lexer.peek(1).tokenType == TokenType::ID)
                             {
+                                string variable = "";
+                                variable = variable + _lexer.peek(1).lexeme;
+
                                 expect(TokenType::ID);
                                 if (_lexer.peek(1).tokenType == TokenType::AO)
                                 {
+                                    variable = variable + " = ";
                                     expect(TokenType::AO);
-                                    rightAssign();
+                                    rightAssign(variable);
                                     if (_lexer.peek(1).tokenType == TokenType::COL)
                                     {
                                         expect(TokenType::COL);
@@ -598,6 +857,14 @@ bool parser::loop()
                                             if (_lexer.peek(1).tokenType == TokenType::END)
                                             {
                                                 expect(TokenType::END);
+
+                                                tacs.push_back(variable);
+                                                tacs.push_back("goto ");
+                                                backpatch_loop(tacs, stopping_condition);
+                                                backpatch(tacs);
+                                                
+                                                
+                                                
                                                 statements();
                                                 return true;
                                             }
@@ -614,17 +881,18 @@ bool parser::loop()
     return false;
 }
 
-bool parser::rightAssign()
+bool parser::rightAssign(string & n)
 {
     //rightAssign->expression | NL
     if (_lexer.peek(1).tokenType == TokenType::NL)
     {
+        n = n + _lexer.peek(1).lexeme;
         expect(TokenType::NL);
         return true;
     }
     else
     {
-        if (expression() == true)
+        if (expression(n) == true)
         {
             return true;
         }
@@ -638,10 +906,14 @@ bool parser::if_()
     //if_->IF expression ro expression COL BEGIN statements END  elif else_ statements
     if (_lexer.peek(1).tokenType == TokenType::IF)
     {
+        string tac = "if ";
         expect(TokenType::IF);
-        expression();
-        relationalOperators();
-        expression();
+        expression(tac);
+        relationalOperators(tac);
+        expression(tac);
+        tac = tac + " " + "goto " + to_string(tacs.size() + 2);
+        tacs.push_back(tac);
+        tacs.push_back("goto ");
         if (_lexer.peek(1).tokenType == TokenType::COL)
         {
             expect(TokenType::COL);
@@ -651,10 +923,13 @@ bool parser::if_()
                 statements();
                 if (_lexer.peek(1).tokenType == TokenType::END)
                 {
-                    expect(TokenType::END);
+                    backpatch(tacs);
+                    expect(TokenType::END);  
+                    int elif_count = 0;
                     elif();
                     else_();
                     statements();
+
                     return true;
                 }
             }
@@ -662,16 +937,24 @@ bool parser::if_()
     }
     return false;
 }
+
 bool parser::elif()
 {
     //elif statement
     //elif-> elif expression ro expression COL BEGIN statements END elif else_ statements | null
+    static int elif_count = 1;
     if (_lexer.peek(1).tokenType == TokenType::ELIF)
     {
+        string tac = "if ";
         expect(TokenType::ELIF);
-        expression();
-        relationalOperators();
-        expression();
+        expression(tac);
+        relationalOperators(tac);
+        expression(tac);
+
+        tac = tac + " " + "goto " + to_string(tacs.size() + 2);
+        tacs.push_back(tac);
+        tacs.push_back("goto ");
+
         if (_lexer.peek(1).tokenType == TokenType::COL)
         {
             expect(TokenType::COL);
@@ -681,6 +964,8 @@ bool parser::elif()
                 statements();
                 if (_lexer.peek(1).tokenType == TokenType::END)
                 {
+                    backpatch(tacs);
+                    tacs.push_back("goto ");
                     expect(TokenType::END);
                     elif();
                     else_();
@@ -698,6 +983,7 @@ bool parser::else_()
     //else_ -> ELSE BEGIN statements END | null
     if (_lexer.peek(1).tokenType == TokenType::ELSE)
     {
+        //tacs.push_back("goto ");
         expect(TokenType::ELSE);
         if (_lexer.peek(1).tokenType == TokenType::COL)
         {
@@ -708,6 +994,7 @@ bool parser::else_()
                 statements();
                 if (_lexer.peek(1).tokenType == TokenType::END)
                 {
+                    //backpatch(tacs);
                     expect(TokenType::END);
                     return true;
                 }
@@ -721,37 +1008,43 @@ bool parser::else_()
     
 }
 
-bool parser::relationalOperators()
+bool parser::relationalOperators(string & str)
 {
     //relational operators
     //ro->EQUALTO | LEQ | LESSTHAN | GEQ | GRTHAN | NOTEQUALS
     if (_lexer.peek(1).tokenType == TokenType::EQUALTO)
     {
+        str = str + " " + "== ";
         expect(TokenType::EQUALTO);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::LEQ)
     {
+        str = str + " " + "<= ";
         expect(TokenType::LEQ);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::LESSTHAN)
     {
+        str = str + " " + "< ";
         expect(TokenType::LESSTHAN);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::GEQ)
     {
+        str = str + " " + ">= ";
         expect(TokenType::GEQ);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::GRTHAN)
     {
+        str = str + " " + "> ";
         expect(TokenType::GRTHAN);
         return true;
     }
     else if (_lexer.peek(1).tokenType == TokenType::NOTEQUALTO)
     {
+        str = str + " " + "!= ";
         expect(TokenType::NOTEQUALTO);
         return true;
     }
@@ -769,10 +1062,12 @@ bool parser::functionCall()
     if (_lexer.peek(1).tokenType == TokenType::CALL)
     {
         expect(TokenType::CALL);
+        string tac = "call ";
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
+            tac = tac + _lexer.peek(1).lexeme;
             expect(TokenType::ID);
-            if(id2() == false)
+            if(id2(tac) == false)
             {
                 return false;
             }
@@ -780,6 +1075,7 @@ bool parser::functionCall()
             if (_lexer.peek(1).tokenType == TokenType::SCOL)
             {
                 expect(TokenType::SCOL);
+                tacs.push_back(tac);
                 return statements();
             }
 
@@ -789,26 +1085,27 @@ bool parser::functionCall()
     return false;
 }
 
-
-bool parser::id2()
+bool parser::id2(string & tac)
 {
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        tac = tac + " " + _lexer.peek(1).lexeme;
+        tacs.push_back("param " + _lexer.peek(1).lexeme);
         expect(TokenType::ID);
-     
-        return id3();
         
+        return id3(tac);
 
     }
     return true;
 }
 
-bool parser::id3()
+bool parser::id3(string &tac)
 {
     if (_lexer.peek(1).tokenType == TokenType::COM)
     {
+        tac = tac + ", ";
         expect(TokenType::COM);
-        return id2();
+        return id2(tac);
 
     }
     return true;
@@ -820,18 +1117,23 @@ bool parser::return_()
     //return_ -> RETURN value4
     if (_lexer.peek(1).tokenType == TokenType::RETURN)
     {
+        
         expect(TokenType::RETURN);
-        value4();
+        string str = "return ";
+        value4(str);
+        str = str + ';';
+        tacs.push_back(str);
         return true;
     }
     return false;
 }
 
-bool parser::value4()
+bool parser::value4(string & str)
 {
     //value4 -> ID SCOL | value SCOL
     if (_lexer.peek(1).tokenType == TokenType::ID)
     {
+        str = str + _lexer.peek(1).lexeme;
         expect(TokenType::ID);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
@@ -841,9 +1143,10 @@ bool parser::value4()
     }
     else 
     {
-        value();
+        value(str);
         if (_lexer.peek(1).tokenType == TokenType::SCOL)
         {
+
             expect(TokenType::SCOL);
             return true;
         }

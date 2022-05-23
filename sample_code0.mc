@@ -6,7 +6,7 @@ begin # Three address code generation starts after here
 	x<-0 int;
 	y<-1 int;
 	z<-0 int;
-	i    int;
+	i   int;
 	num  int;
 	print "Enter the number :";#print 
     in num; #take input
@@ -20,7 +20,7 @@ begin # Three address code generation starts after here
     begin
         print x;
         print " ";
-        z <- x + y; # store sum in z
+        z <- x + y * num/ 12/13/132/13*5; # store sum in z
         x <- y; #assign value of y to x
         y <- z; #assign values of z to y
     end

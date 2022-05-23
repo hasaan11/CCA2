@@ -1,5 +1,6 @@
 #include <iostream>
 #include "parser.h"
+
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -23,7 +24,11 @@ int main(int argc, char* argv[])
 		Parser.start();
 		// Parser creates symbol table
 		Parser.create_symbol_table();
+
+		// create a translator object and pass the token array to it
 	
+		Parser.get_tacs();
+		Parser.write_tac_to_file();
 
 	}
 	else if (argc > 2)

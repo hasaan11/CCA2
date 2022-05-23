@@ -43,6 +43,12 @@
     <Text Include="..\..\..\Downloads\group 3.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="grammar.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="tac.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="sample_code0.mc">

@@ -30,7 +30,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\Downloads\group 3.txt" />
+    <Text Include="grammar.txt" />
     <Text Include="symbol_table.txt" />
+    <Text Include="tac.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="sample_code0.mc" />

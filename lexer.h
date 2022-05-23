@@ -64,6 +64,7 @@ public:
 };
 class lexer
 {
+
 	vector<char> stream;  //used for storing file sample_code.cc content
 	vector<token> tokens; //vector to store all (tokens,lexeme) pairs
 	void Tokenize();//populates tokens vector
@@ -1004,7 +1005,7 @@ public:
 	}
 
 public:
-	lexer();
+	lexer();  
 	lexer(const char filename[]);
 	void printRaw();//just print everything as it is present in file
 	token getNextToken();//get next token

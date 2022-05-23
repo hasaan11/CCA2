@@ -1,0 +1,20 @@
+0 if x <= 0 goto 2
+1 goto 3
+2 out "x is less than 0""
+3 if x == 1 goto 5
+4 goto 6
+5 out "x is equal to 1""
+6 goto 
+7 if x == 2 goto 9
+8 goto 10
+9 out "x is equal to 2""
+10 goto 
+11 if x == 3 goto 13
+12 goto 14
+13 out "x is equal to 3""
+14 goto 
+15 if x == 4 goto 17
+16 goto 18
+17 out "x is equal to 4""
+18 goto 
+19 out "x is greater than 4""

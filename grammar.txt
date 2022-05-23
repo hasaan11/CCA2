@@ -1,5 +1,70 @@
-This will be your grammar file in future assignments
-Leave it as it is for now
-GRAMMAR:
+//marks the start of the code
+start->FUNC datatype ID parameters COL BEGIN codeBlock END start | null {vector<string> tacs}
 
-Regular Expressions used in GRAMMAR
+datatype -> INT | CHAR
+
+//parameters for a function call
+parameters->ID datatype parameters2 | null
+parameters2 -> COMMA ID datatype parameters2 | null
+
+//ensures there is at least one occurence of a statement
+codeBlock-> declare | input | print |println | functionCall | loop | if_ | functionCall | return_ 
+
+//general parts of the sample codes
+statements -> declare | input | print | println | loop | if_ | functionCall | return_ | null
+
+declare->ID {declare.v = ID.lexeme, emit(" ", declare.v)} initializer {emit(initializer.v, declare.v), push(declare.v)} declare2 datatype SCOL statements
+initializer -> AO {initializer.v = AO.lexeme, emit(" ", initializer.v)} value2 | null
+declare2 -> COMMA ID{declare2.val = ID.lexeme, emit(" " , declare2.val} initializer {emit(initializer.v, declare2.v), push(declare2)} declare2 | null  
+
+Assign ->ID{Assign.v = ID.lexeme, emit(" ", declare.v)} initializer{emit(initializer.v, Assign.v)} declare2 SCOL statements
+
+//value
+value-> NL{value.v = NL.lexeme} | CL {value.v = "CL.lexeme"} | ID {value.v = ID.lexeme}
+
+//handles the precedence of operators
+expression -> lowPrecedence {expression.v = low_precedence.v} expression2 {emit(expression2.val, expression.v)}
+expression2 -> PLUS {expression2.val = '+'} lowPrecedence{emit(lowPrecedence.v, expression2.v)} expression2 {emit(expression2'.v, expression2.v)} |
+MINUS {expression2.val = '-'} lowPrecedence {emit(lowPrecedence.v, expression2.v)} expression2 {emit(expression2'.v, expression2.v)} | null
+lowPrecedence -> allotValue {emit(allotValue, lowPrecedence.v)} highPrecedence {emit(highPrecendence.v, lowPrecedence.v)}
+highPrecedence -> MUL {emit( "*" ,highPrecedence.v)} allotValue {emit(allotValue.v, highPrecedence.v)} highPrecedence {emit(highPrecedence'.v, highPrecedence.v)}
+| DIV {emit( "/" ,highPrecedence.v)} allotValue {emit(allotValue.v, highPrecedence.v)} highPrecedence {emit(highPrecedence'.v, highPrecedence.v)} 
+| MOD {emit( "%" ,highPrecedence.v)} allotValue {emit(allotValue.v, highPrecedence.v)} highPrecedence {emit(highPrecedence'.v, highPrecedence.v)} | null
+allotValue -> ID{allotValue.v = ID.lexeme} | NL {allotValue.v = NL.lexeme | CL {allotValue.v = CL.lexeme}
+
+//input statement
+input -> IN{input.v = "in "} ID {emit(ID.lexeme, input.v)} SCOL {emit(";", input.v),push{input.v}} statements
+
+//print statement
+print -> PRINT {print.v = "out "} print2 {push(print.v)} statements
+print2 -> ID {print2.val = ID.lexeme} SCOL emit(";", print2.val) | STR {print2.val = STR.lexeme} SCOL emit(";", print2.val) |
+expression {print2.val = expression.lexeme} SCOL emit(";", print2.val)
+
+//println statement
+println -> {print.v = "out "} print2 {push(print.v), push("out "\n"")} statements
+
+//for loop
+loop -> FOR declareInt COMMA expression ro expression COMMA ID AO rightAssign COLON
+	BEGIN statements END statements  //ID AO NL 
+
+rightAssign -> expression {rightAssign.v = expression.v} | NL {rightAssign.v = NL.lexeme}
+
+//if statement
+if_ -> IF (if_.v = "if ") expression {(emit(expression.v, " ", if_.v))} ro {emit(ro.v, " ", if_.v)} 
+expression {emit(expression.v, " ", "goto ",current_line + 2,if_.v)} COL {tacs.push(if_.v)} BEGIN {tacs.push ("goto ")} statements END {backpatch(tacs)} else_ statements
+elif -> ELIF (elif_.v = "if ") expression {(emit(expression.v, " ", elif_.v))} ro {emit(ro.v, " ", elif_.v)}
+expression {(emit(expression.v, " ", "goto ", current_line + 2 elif_.v))} COL BEGIN  tacs.push ("goto ")} statements END {backpatch(tacs)}  else_ statements
+else_ -> ELSE BEGIN statements END | null
+
+//relational operators
+ro -> EQUALTO {ro.v = "=="} | LEQ {ro.v = "<="} | LESSTHAN {ro.v = "<"}  | GEQ {ro.v = ">="}  | GRTHAN {ro.v = ">"}  | NOTEQUALS {ro.v = "!="} 
+
+//function call, general implementation that can send multiple parameters
+functionCall -> CALL {functionCall.v = "call "} ID {emit(ID.lexeme, functionCall.v)} variableName  {emit(variableName,functionCall.v)} SCOL {tacs.push(functionCall.v)} statements
+variableName  -> ID {variableName.v = ID.lexeme + " "} variableName2 {emit(variableName2, variableName)} | null
+variableName2  -> COMMA {variableName2 = ", "} variableName {emit(variableName.v, variableName2.v}| null
+
+//return 
+return_ -> RETURN {return_.v = "ret "} return2 {emit(return2.val,return_.v)} { tacs.push(return2)}
+return2 -> ID SCOL {return2.val = ID.lexeme + ';'} | valueChar SCOL{return2.val = valueChar.lexeme + ';'} | valueInt SCOL{return2.val = valueInt.lexeme + ';
+'}
