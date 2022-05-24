@@ -8,22 +8,34 @@ end
 elif x=1:
 begin
 	print "x is equal to 1";
+	print "x is equal to 1";
+	print "x is equal to 1";
+	print "x is equal to 1";
 end
 elif x=2:
 begin
 	print "x is equal to 2";
+	print "x is equal to 1";
+	print "x is equal to 1";
+	print "x is equal to 1";
 end
 elif x=3:
 begin
 	print "x is equal to 3";
+	print "x is equal to 1";
+	print "x is equal to 1";
 end
 elif x=4:
 begin
 	print "x is equal to 4";
+	print "x is equal to 1";
+	print "x is equal to 1";
+	print "x is equal to 1";
 end
 else:
 begin
 	print "x is greater than 4";
+	print "x is equal to 1";
 end
 
 end

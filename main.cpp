@@ -20,10 +20,10 @@ int main(int argc, char* argv[])
 		//}
 		parser Parser(argv[1]);
 		cout << "********************** Parser Starts from here **********************" << endl;
-		// Parser Starts
-		Parser.start();
 		// Parser creates symbol table
 		Parser.create_symbol_table();
+		// Parser Starts
+		Parser.start();
 
 		// create a translator object and pass the token array to it
 	

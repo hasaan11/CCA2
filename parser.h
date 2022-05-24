@@ -44,7 +44,7 @@ public:
     bool rightAssign(string & n);
     bool if_();
     bool else_();
-    bool elif();
+    bool elif(int & elif_count);
     bool relationalOperators(string& n);
     bool functionCall();
     bool return_();

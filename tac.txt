@@ -1,20 +1,30 @@
-0 if x <= 0 goto 2
-1 goto 3
-2 out "x is less than 0""
-3 if x == 1 goto 5
-4 goto 6
-5 out "x is equal to 1""
-6 goto 
-7 if x == 2 goto 9
-8 goto 10
-9 out "x is equal to 2""
-10 goto 
-11 if x == 3 goto 13
-12 goto 14
-13 out "x is equal to 3""
-14 goto 
-15 if x == 4 goto 17
-16 goto 18
-17 out "x is equal to 4""
-18 goto 
-19 out "x is greater than 4""
+0 x = 0;
+1 y = 1;
+2 z = 0;
+3 out "Enter the number :""
+4 in num ;
+5 if num < 0 goto 7
+6 goto 9
+7 out "negative number entered\n""
+8 return 0;
+9 out "\nThe fibonacci series :""
+10 i = 0
+11 if i < num goto 13
+12 goto 27
+13 out x;
+14 out " ""
+15 t1 = y*num;
+16 t2 = t1/12;
+17 t3 = t2/13;
+18 t4 = t3/132;
+19 t5 = t4/13;
+20 t6 = t5*5;
+21 t7 = x+t6;
+22 z = t7;
+23 x = y;
+24 y = z;
+25 i = i+1
+26 goto 11
+27 out "\n""
+28 return 0;
+29

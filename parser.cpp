@@ -5,8 +5,10 @@
 #include <stack>
 using namespace std;
 
+
 vector<string> tacs;
 int new_variable_counter = 1;
+int address = 0;
 
 void backpatch(vector<string> &tacs)
 {
@@ -47,6 +49,35 @@ void backpatch_loop(vector<string>& tacs, string loop_start)
     }
 }
 
+void backpatch_elif(vector<string>& tacs, int elif_count)
+{
+    for (int i = 0; i < tacs.size(); i++)
+    {
+        if (tacs[i] == "goto ")
+        {
+            tacs[i] = "goto " + to_string(tacs.size());
+        }
+    }
+}
+void backpatch_elif2(vector<string>& tacs)
+{
+    int c = 0;
+    int i = tacs.size() - 1;
+    string temp = "";
+    while (1)
+    {
+        temp = tacs[i];
+        if (temp == "goto ")
+        {
+            tacs[i] = temp + to_string(i + c + 2);
+            return;
+        }
+        c++;
+        i--;
+    }
+
+}
+
 bool not_operand(char c)
 {
     if (c == '+' || c == '-' || c == '/' || c == '*' || c == '%')
@@ -56,6 +87,30 @@ bool not_operand(char c)
     return true;
 
 }
+
+
+
+
+
+
+void update_symbol_table(string new_variable) {
+
+    fstream out;
+    out.open("symbol_table.txt", ios::app);
+    if (!out)
+    {
+        cout << "Error in opening the symbol table for upadting!";
+        exit(-1);
+    }
+
+    out << new_variable << " " << "INT" << " " << address <<  endl;
+    address = address + 4;
+    out.close();
+
+}
+
+
+
 void tac_for_assignments(vector<string>& tacs, string str)
 {
 
@@ -118,6 +173,7 @@ void tac_for_assignments(vector<string>& tacs, string str)
                 new_variable_counter++;
 
                 word = new_variable;
+                update_symbol_table(new_variable);
 
             }
             else
@@ -140,7 +196,9 @@ void tac_for_assignments(vector<string>& tacs, string str)
             string tac = new_variable + " = " + x + operand + y + ';';
             tacs.push_back(tac); // push the string to the tacs
             stk.push(new_variable);
-            new_variable_counter++;
+
+            update_symbol_table(new_variable);
+            
             
         }
 
@@ -178,12 +236,14 @@ void parser :: write_tac_to_file()
         exit(-1);
     }
 
-     for (int i = 0; i < tacs.size(); i++)
-    {
+    int i;
+     for (i = 0; i < tacs.size(); i++)
+     {
         string temp = tacs[i];
         fout << i << " " << temp << endl;
-    }
+     }
 
+     fout << i;
 
     fout.close();
 }
@@ -926,10 +986,11 @@ bool parser::if_()
                     backpatch(tacs);
                     expect(TokenType::END);  
                     int elif_count = 0;
-                    elif();
+                    elif(elif_count);
                     else_();
                     statements();
-
+                    
+                    backpatch_elif(tacs, elif_count);
                     return true;
                 }
             }
@@ -938,11 +999,11 @@ bool parser::if_()
     return false;
 }
 
-bool parser::elif()
+bool parser::elif(int & elif_count)
 {
     //elif statement
     //elif-> elif expression ro expression COL BEGIN statements END elif else_ statements | null
-    static int elif_count = 1;
+
     if (_lexer.peek(1).tokenType == TokenType::ELIF)
     {
         string tac = "if ";
@@ -964,10 +1025,11 @@ bool parser::elif()
                 statements();
                 if (_lexer.peek(1).tokenType == TokenType::END)
                 {
-                    backpatch(tacs);
+                    backpatch_elif2(tacs);
                     tacs.push_back("goto ");
                     expect(TokenType::END);
-                    elif();
+                    elif_count++;
+                    elif(elif_count);
                     else_();
                     statements();
                     return true;
@@ -1222,7 +1284,15 @@ void parser::create_symbol_table()
 
     for (int i = 0; i < table.size(); i++)
     {
-        fin << table[i].lexeme << " " << table[i].type << endl;
+        fin << table[i].lexeme << " " << table[i].type << " " << address << endl;
+        if (table[i].type == "INT")
+        {
+            address = address + 4;
+        }
+        else
+        {
+            address = address + 1;
+        }
     }
 
 }
