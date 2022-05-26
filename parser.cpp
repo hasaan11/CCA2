@@ -29,6 +29,7 @@ void backpatch(vector<string> &tacs)
 
 
 }
+
 void backpatch_loop(vector<string>& tacs, string loop_start)
 {
     int c = 0;
@@ -59,6 +60,7 @@ void backpatch_elif(vector<string>& tacs, int elif_count)
         }
     }
 }
+
 void backpatch_elif2(vector<string>& tacs)
 {
     int c = 0;
@@ -88,11 +90,6 @@ bool not_operand(char c)
 
 }
 
-
-
-
-
-
 void update_symbol_table(string new_variable) {
 
     fstream out;
@@ -108,8 +105,6 @@ void update_symbol_table(string new_variable) {
     out.close();
 
 }
-
-
 
 void tac_for_assignments(vector<string>& tacs, string str)
 {
@@ -218,13 +213,10 @@ void tac_for_assignments(vector<string>& tacs, string str)
     }
 }
 
-
-
 void parser::get_tacs()
 {
     this->tacs = tacs;
 }
-
 
 void parser :: write_tac_to_file()
 {
@@ -248,14 +240,13 @@ void parser :: write_tac_to_file()
     fout.close();
 }
 
-
-
 void parser::syntax_error()
 {
     cout << "SYNTAX ERROR\n";
     system("PAUSE");
     exit(1);
 }
+
 token parser::expect(TokenType expected_type)
 {
     token t = _lexer.getNextToken();
@@ -266,12 +257,11 @@ token parser::expect(TokenType expected_type)
     return t;
 }
  
-
-
 parser::parser(const char filename[])
 {
     _lexer = lexer(filename);
 }
+
 void parser::readAndPrintAllInput() //read and print allinputs (provided)
 {
     token t;
@@ -282,6 +272,7 @@ void parser::readAndPrintAllInput() //read and print allinputs (provided)
         t = _lexer.getNextToken();
     }
 }
+
 void parser::resetPointer()
 {
     _lexer.resetPointer();
@@ -747,7 +738,7 @@ bool parser::input()
         expect(TokenType::IN);
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
-            tac = tac + _lexer.peek(1).lexeme + " ";
+            tac = tac + _lexer.peek(1).lexeme;
             expect(TokenType::ID);
             if (_lexer.peek(1).tokenType == TokenType::SCOL)
             {
@@ -829,7 +820,7 @@ bool parser::value3(string & str)
         {
             
             expect(TokenType::SCOL);
-            tacs.push_back(str);
+            tacs.push_back(str + ';');
             statements();
             return true;
         }
@@ -1216,9 +1207,6 @@ bool parser::value4(string & str)
     return false;
 }
 
-
-
-
 void parser::create_symbol_table()
 {
     vector<token> tokens = _lexer.return_token();
@@ -1284,15 +1272,25 @@ void parser::create_symbol_table()
 
     for (int i = 0; i < table.size(); i++)
     {
-        fin << table[i].lexeme << " " << table[i].type << " " << address << endl;
+        fin << table[i].lexeme << " " << table[i].type << " ";
+        if (table[i].type == "INT" || table[i].type == "CHAR")
+        {
+            fin << address << endl;
+        }
+        else if (table[i].type == "FUNC")
+        {
+            fin << address << endl;
+        }
+             
         if (table[i].type == "INT")
         {
             address = address + 4;
         }
-        else
+        else if(table[i].type == "CHAR")
         {
             address = address + 1;
         }
     }
-
+    fin << "file END ";
+    fin.close();
 }

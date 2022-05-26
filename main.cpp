@@ -1,6 +1,6 @@
 #include <iostream>
 #include "parser.h"
-
+#include "VM.h"
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
 	
 		Parser.get_tacs();
 		Parser.write_tac_to_file();
+
+		VirtualMachine VM;
 
 	}
 	else if (argc > 2)

@@ -1,13 +1,7 @@
 main FUNC 0
-x INT 1
-y INT 5
-z INT 9
-i INT 13
-num INT 17
-t1 INT 21
-t2 INT 25
-t3 INT 29
-t4 INT 33
-t5 INT 37
-t6 INT 41
-t7 INT 45
+x INT 0
+y INT 4
+z INT 8
+i INT 12
+num INT 16
+file END 

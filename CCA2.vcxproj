@@ -27,6 +27,7 @@
     <ClInclude Include="lexer.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="symbol_table.h" />
+    <ClInclude Include="VM.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\Downloads\group 3.txt" />
