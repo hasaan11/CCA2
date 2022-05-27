@@ -2,11 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include<vector>
 using namespace std;
 
-string filename = "tac.txt";
-string symbol_table = "symbol_table.txt";
+
 
 class VirtualMachine {
 
@@ -45,6 +44,10 @@ class VirtualMachine {
 
 
 private:
+
+	string file = "tac.txt";
+	string symbol_tab = "symbol_table.txt";
+
 	int pc;
 	int** opcode_table;
 	int opcode_table_length;
@@ -153,6 +156,7 @@ private:
 			// check if its printing a value or a variable
 			string val = "";
 			bool string = 0;
+			bool hardcoded_value = 0;
 			if (temp[index] == '"')
 			{
 				string = true;
@@ -172,7 +176,17 @@ private:
 			else
 			{
 				// get value through address
-				opcode_table[line_number][1] = get_address_from_symbol_table(val);
+				int address = get_address_from_symbol_table(val);
+				if (address == -1)
+				{
+					opcode_table[line_number][2] = stoi(val);
+				}
+				else
+				{
+					opcode_table[line_number][1] = address;
+				}
+				
+				
 			}
 
 
@@ -502,7 +516,7 @@ private:
 	int get_tac_lines()
 	{
 		ifstream fin;
-		fin.open(filename);
+		fin.open(file);
 		if (!fin)
 		{
 			cout << "Error in opening the TAC file!" << endl;
@@ -526,7 +540,7 @@ private:
 	void construct_opcode_table()
 	{
 		ifstream fin;
-		fin.open(filename);
+		fin.open(file);
 		if (!fin)
 		{
 			cout << "Error in opening the TAC file!" << endl;
@@ -601,6 +615,41 @@ private:
 
 	}
 
+
+
+
+
+	int get_index_from_address(int address)
+	{
+		int index = (address / 4) + (address % 4);
+		return index;
+	}
+
+
+
+	
+
+	void execute_copy();
+	void execute_div();
+	void execute_equalTo();
+	void execute_geq();
+	void execute_goto();
+	void execute_greaterThan();
+	void execute_in();
+	void execute_leq();
+	void execute_lessThan();
+	void execute_minus();
+	void execute_mod();
+	void execute_mul();
+	void execute_neq();
+	void execute_out();
+	void execute_plus();
+	void execute_return();
+
+
+	int get_value1();
+	int get_value2();
+
 public:
 	// constructor
 	VirtualMachine()
@@ -655,7 +704,132 @@ public:
 		// fill opcode table
 		construct_opcode_table();
 
+
+		// initialize pc to the main func (bonus work)
+
 	
+	}
+
+
+	void execute_code()
+	{
+
+		for (int i = 0; i < opcode_table_length; i++)
+		{
+			for (int j = 0; j < 6; j++)
+			{
+				cout << opcode_table[i][j] << " ";
+			}
+			cout << string_table[i] << endl;
+		}
+
+
+	// opcode destination src1 src2 harcode1 hardcode2   string
+		while (1)
+		{
+			switch (opcode_table[pc][0])
+			{
+				case int(opcodes::COPYVAL) :
+				{
+					execute_copy();
+					break;
+				}
+				
+				case int(opcodes::DIV) : 
+				{
+					execute_div();
+					break;
+				}
+
+				case int(opcodes::EQUALTO) :
+				{
+					execute_equalTo();
+					break;
+				}
+
+				case int(opcodes::GEQ) :
+				{
+					execute_geq();
+					break;
+				}
+
+				case int(opcodes::GOTO) :
+				{
+					execute_goto();
+					break;
+				}
+
+				case int(opcodes::GREATERTHAN):
+				{
+					execute_greaterThan();
+					break;
+				}
+
+				case int(opcodes::IN):
+				{
+					execute_in();
+					break;
+				}
+
+				case int(opcodes::LEQ) :
+				{
+					execute_leq();
+					break;
+				}
+
+				case int(opcodes::LESSTHAN) :
+				{
+					execute_lessThan();
+					break;
+				}
+
+				case int(opcodes::MINUS) :
+				{
+					execute_minus();
+					break;
+				}
+
+				case int(opcodes::MOD) :
+				{
+					execute_mod();
+					break;
+				}
+
+				case int(opcodes::MUL) :
+				{
+					execute_mul();
+					break;
+				}
+
+				case int(opcodes::NEQ) :
+				{
+					execute_neq();
+					break;
+				}
+
+				case int(opcodes::OUT) :
+				{
+					execute_out();
+					break;
+				}
+
+				case int(opcodes::PLUS) :
+				{
+					execute_plus();
+					break;
+				}
+
+				case int(opcodes::RET) :
+				{
+					execute_return();
+					break;
+				}
+				default:
+					break;
+				
+			}
+		}
+		
 	}
 
 

@@ -829,11 +829,12 @@ public:
 		lexeme = lexeme + *itr;
 		while (*itr != '\"')
 		{
+
 			itr++;
 			lexeme = lexeme + *itr;
 		}
 		
-		lexeme = lexeme + *itr;
+		//lexeme = lexeme + *itr;
 		itr++;
 		return token(lexeme, TokenType::STR);
 
