@@ -29,12 +29,7 @@ int main(int argc, char* argv[])
 	
 		Parser.get_tacs();
 		Parser.write_tac_to_file();
-
-		system("CLS");
-		
-
-		VirtualMachine VM;
-		VM.execute_code();
+		Parser.update_function_address_in_symbol_table();
 
 	}
 	else if (argc > 2)

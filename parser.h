@@ -53,5 +53,6 @@ public:
     bool id3(string & n);
     void get_tacs();
     void write_tac_to_file();
+    void update_func_address_in_symbol_table();
 };
 #endif

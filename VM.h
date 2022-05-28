@@ -704,7 +704,7 @@ public:
 		// fill opcode table
 		construct_opcode_table();
 
-
+		
 		// initialize pc to the main func (bonus work)
 
 	

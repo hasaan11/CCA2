@@ -247,7 +247,17 @@ void VirtualMachine::execute_out()
 	{
 		string src = string_table[pc];
 		string str = src.substr(1,src.size() - 2);
-		cout << str;
+		//cout << str;
+		for (int i = 0; i < str.size(); i++)
+		{
+			if (str[i] == '\\' && str[i+1] == 'n')
+			{
+				cout << endl;
+				i++;
+			}
+			else
+				cout << str[i];
+		}
 	}
 
 	pc++;
@@ -272,5 +282,5 @@ void VirtualMachine::execute_plus()
 
 void VirtualMachine::execute_return()
 {
-	exit(0);
+	
 }

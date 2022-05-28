@@ -1,23 +1,25 @@
 0 x = 0;
 1 y = 1;
 2 z = 0;
-3 out "Enter the number :";
-4 in num;
-5 if num < 0 goto 7
-6 goto 9
-7 out "negative number entered\n";
-8 return 0;
-9 out "\nThe fibonacci series :";
-10 i = 0
-11 if i < num goto 13
-12 goto 20
-13 out x;
-14 out " ";
-15 z = x+y;
-16 x = y;
-17 y = z;
-18 i = i+1
-19 goto 11
-20 out "\n";
-21 return 0;
-22
+3 if n < 0 goto 5
+4 goto 7
+5 out "negative number entered\n";
+6 return 0;
+7 out "\nThe fibonacci series :";
+8 i = 0
+9 if i < n goto 11
+10 goto 18
+11 out x;
+12 out " ";
+13 z = x+y;
+14 x = y;
+15 y = z;
+16 i = i+1
+17 goto 9
+18 return 0;
+19 out "Enter the number :";
+20 in num;
+21 param num
+22 call calcculateFib num
+23 return 0;
+24

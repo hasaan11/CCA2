@@ -1,7 +1,9 @@
-main FUNC 0
-x INT 0
-y INT 4
-z INT 8
-i INT 12
-num INT 16
+calcculateFib FUNC 0
+n INT 0
+x INT 4
+y INT 8
+z INT 12
+i INT 16
+main FUNC 20
+num INT 20
 file END 

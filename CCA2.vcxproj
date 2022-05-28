@@ -22,16 +22,15 @@
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
-    <ClCompile Include="VM.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lexer.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="symbol_table.h" />
-    <ClInclude Include="VM.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\Downloads\group 3.txt" />
+    <Text Include="functions.txt" />
     <Text Include="grammar.txt" />
     <Text Include="symbol_table.txt" />
     <Text Include="tac.txt" />

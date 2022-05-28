@@ -1,41 +1,31 @@
+#full credit for running (when your compiler is complete) this type of code (no bonus)
+#program to calculate fibonacci series and display on stdout
 func int main:
-begin
-		
-if x<=0:
-begin
-	print "x is less than 0";
-end
-elif x=1:
-begin
-	print "x is equal to 1";
-	print "x is equal to 1";
-	print "x is equal to 1";
-	print "x is equal to 1";
-end
-elif x=2:
-begin
-	print "x is equal to 2";
-	print "x is equal to 1";
-	print "x is equal to 1";
-	print "x is equal to 1";
-end
-elif x=3:
-begin
-	print "x is equal to 3";
-	print "x is equal to 1";
-	print "x is equal to 1";
-end
-elif x=4:
-begin
-	print "x is equal to 4";
-	print "x is equal to 1";
-	print "x is equal to 1";
-	print "x is equal to 1";
-end
-else:
-begin
-	print "x is greater than 4";
-	print "x is equal to 1";
-end
-
+begin # Three address code generation starts after here
+	#variable declarations, note num and i are not initialized
+	d<-'c' char;
+	x<-0 int;
+	y<-1 int;
+	z<-0 int;
+	i   int;
+	num  int;
+	print "Enter the number :";#print 
+    in num; #take input
+	if num < 0:
+	begin
+		print "negative number entered\n";#print
+		return 0;# this statement just halt the program
+	end
+    print "\nThe fibonacci series :";#print
+    for i<-0, i<num, i<-i+1: # loop calculating actual output
+    begin
+        print 'c';
+        print " ";
+        z <- x + y; # store sum in z
+        x <- y; #assign value of y to x
+        y <- z; #assign values of z to y
+    end
+    print "\n";
+    return 0;#halts program
+	
 end

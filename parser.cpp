@@ -9,6 +9,7 @@ using namespace std;
 vector<string> tacs;
 int new_variable_counter = 1;
 int address = 0;
+int func_count = 0;
 
 void backpatch(vector<string> &tacs)
 {
@@ -315,6 +316,22 @@ bool parser::start()
 
         if (_lexer.peek(1).tokenType == TokenType::ID)
         {
+            // delete the functions file
+            if (func_count == 0)
+            {
+                remove("functions.txt");
+                func_count++;
+            }
+            string func = _lexer.peek(1).lexeme;
+            ofstream fout;
+            fout.open("functions.txt", ios::app);
+            if (!fout)
+            {
+                cout << "Error in opening the functions file." << endl;
+            }
+            fout << func << " " << tacs.size() << endl;
+            fout.close();
+           
             expect(TokenType::ID);
             if (parameters() == false)
             {
@@ -1293,4 +1310,34 @@ void parser::create_symbol_table()
     }
     fin << "file END ";
     fin.close();
+}
+
+
+
+void parser::update_func_address_in_symbol_table()
+{
+    vector<string> funcs;
+    vector<int> tac_address;
+
+    ifstream fin;
+    fin.open("functions.txt");
+
+    string name;
+    int val;
+    while (!fin.eof())
+    {
+        fin >> name;
+        fin >> val;
+
+        funcs.push_back(name);
+        tac_address.push_back(val);
+    }
+
+    fin.close();
+
+    ifstream fin;
+    ofstream fout;
+
+   
+    
 }

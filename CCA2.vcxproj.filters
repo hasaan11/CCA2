@@ -24,9 +24,6 @@
     <ClCompile Include="parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VM.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lexer.h">
@@ -36,9 +33,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="symbol_table.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,6 +47,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="tac.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="functions.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -24,7 +24,7 @@ begin
 			y <- z; #assign values of z to y
 		end
 	end
-	return 0;
+	return 0; 
 end
 #program to calculate fibonacci series and display on stdout
 func int main:
